@@ -1,9 +1,11 @@
+import candy.Candy;
+
 public class Main {
     final static String[] mainVariants ={
-            "1. Create empty gift",
+            "\n1. Create empty gift",
             "2. Create fill in gift",
             "3. Find gift",
-            "0. Exit",
+            "0. Exit\n",
     };
     final static String[] giftVariants ={
             "Gift menu",
@@ -32,25 +34,24 @@ public class Main {
     };
 
     public static void main(String[] args) {
-       int variant;
-       boolean exit = true;
-       while(exit) {
-           printVariants(mainVariants);
-           variant = Integer.parseInt(System.console().readLine());
-           switch(variant) {
-               case 1:
-                   break;
-               case 2:
-
-                    break;
-               case 3:
-                   exit = false;
-                   break;
-               default:
-                   throw new IllegalStateException("Unexpected value: " + variant);
-           }
-           giftMenu();
-       }
+        int variant;
+        boolean exit = true;
+        while(exit) {
+            printVariants(mainVariants);
+            variant = Integer.parseInt(System.console().readLine());
+            switch(variant) {
+            case 1:
+                break;
+            case 2:
+                break;
+            case 3:
+                exit = false;
+                break;
+            default:
+                throw new IllegalStateException("Unexpected value: " + variant);
+            }
+            giftMenu();
+        }
     }
     static void giftMenu(){
         int variant;
