@@ -3,17 +3,26 @@ package gift;
 import candy.Candy;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 
 public class Gift {
     private static int _idCounter = 0;
     private int _id;
     private ArrayList<Candy> _candies;
     private int _totalCost;
+    private enum sortType{
+        SUGAR_PER_100,
+        NAME,
+        ID,
+        PRICE,
+        WEIGHT,
+        CANDY_TYPE,
+    };
 
 
     public Gift(ArrayList<Candy> candies) {
         _id = ++_idCounter;
-        _candies = GiftSorting.sortBySugar(candies);
+        _candies = sort(sortType.SUGAR_PER_100);
         for (Candy candy : candies) {
             _totalCost += candy.get_price();
         }
@@ -69,7 +78,7 @@ public class Gift {
         }
 
         int middle = (start + end) / 2;
-        int sugar = _candies.get(middle).get_sugar();
+        int sugar = _candies.get(middle).get_sugarPercentagePer100g();
 
         if (sugar >= sugar_min && sugar <= sugar_max) {
             return _candies.get(middle);
@@ -81,4 +90,35 @@ public class Gift {
             return recursiveBinarySearch(sugar_min, sugar_max, start, middle - 1);
         }
     }
+    private ArrayList<Candy> sort (sortType sortType){
+        ArrayList<Candy> sortedCandies = new ArrayList<Candy>(_candies);
+        switch (sortType){
+            case SUGAR_PER_100:
+                sortedCandies.sort(compareBySugarPer100());
+                break;
+            case NAME:
+                sortedCandies.sort(compareByName());
+                break;
+            case ID:
+                sortedCandies.sort(compareById());
+                break;
+            case PRICE:
+                sortedCandies.sort(compareByPrice());
+                break;
+            case WEIGHT:
+                sortedCandies.sort(compareByWeight());
+                break;
+            case CANDY_TYPE:
+                sortedCandies.sort(compareByCandyType());
+                break;
+        }
+        return sortedCandies;
+    }
+
+    private Comparator<Candy> compareBySugarPer100(){return Comparator.comparing(Candy::get_sugarPercentagePer100g);}
+    private Comparator<Candy> compareById(){return Comparator.comparing(Candy::get_id);}
+    private Comparator<Candy> compareByName(){return Comparator.comparing(Candy::get_name);}
+    private Comparator<Candy> compareByPrice(){return Comparator.comparing(Candy::get_price);}
+    private Comparator<Candy> compareByWeight(){return Comparator.comparing(Candy::get_weight);}
+    private Comparator<Candy> compareByCandyType(){return Comparator.comparing(Candy::get_candyType);}
 }
