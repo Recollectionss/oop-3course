@@ -1,7 +1,9 @@
-package candy;
+package candy.model;
 
-public class Candy {
-    static int _idCounter;
+import candy.interfaces.SortableItem;
+
+public class Candy implements SortableItem {
+    private static int _idCounter = 0;
     private final int _id;
     private String _name;
     private CandyType _candyType;
@@ -22,7 +24,7 @@ public class Candy {
     }
 
     private void calc_sugarPercentagePer100g() {
-        this._sugarPercentagePer100g =  (int) Math.ceil((double) this._weight /this._sugar);
+        this._sugarPercentagePer100g = (int) Math.ceil((double) this._sugar / this._weight * 100);
     }
 
     public int get_id() {return _id;}
@@ -87,7 +89,7 @@ public class Candy {
 
 
 
-        public CandyBuilder setName(String name ){
+        public CandyBuilder withName(String name ){
             if (name.equals("default")){
                 name = names[(int) (Math.random() * names.length)];
             }
@@ -95,7 +97,7 @@ public class Candy {
             return this;
         }
 
-        public CandyBuilder setCandyType(CandyType _candyType) {
+        public CandyBuilder withCandyType(CandyType _candyType) {
             if (_candyType == CandyType.DEFAULT){
                 _candyType = CandyType.HARD_CANDY;
             }
@@ -103,7 +105,7 @@ public class Candy {
             return this;
         }
 
-        public CandyBuilder setSugar(int sugar) {
+        public CandyBuilder withSugar(int sugar) {
             if (sugar == 0){
                 this._sugar = (int)(Math.random()*100) + 1;
                 return this;
@@ -115,7 +117,7 @@ public class Candy {
             return this;
         }
 
-        public CandyBuilder setPrice(int _price) {
+        public CandyBuilder withPrice(int _price) {
             if (_price == 0){
                 this._price = (int)(Math.random()*100) + 1;
                 return this;
@@ -126,7 +128,7 @@ public class Candy {
             this._price = _price;
             return this;
         }
-        public CandyBuilder setWeight(int weight) {
+        public CandyBuilder withWeight(int weight) {
             if (weight == 0){
                 this._weight = (int)(Math.random()*100) + 1;
             }
@@ -143,7 +145,7 @@ public class Candy {
     }
     public static class CandyFactory{
         public Candy generateRandom(){
-            return new CandyBuilder().setName("default").setCandyType(CandyType.DEFAULT).setWeight(0).setSugar(0).setPrice(0).build();
+            return new CandyBuilder().withName("default").withCandyType(CandyType.DEFAULT).withWeight(0).withSugar(0).withPrice(0).build();
         }
     }
 

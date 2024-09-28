@@ -1,5 +1,3 @@
-import candy.Candy;
-
 public class Main {
     final static String[] mainVariants ={
             "\n1. Create empty gift",

@@ -1,6 +1,6 @@
 package gift;
 
-import candy.Candy;
+import candy.model.Candy;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -33,6 +33,22 @@ public class Gift {
         //need use db for send query for found gift with this id
     }
 
+    public Candy findCandyById(int id){
+        for (Candy candy : _candies) {
+            if(candy.get_id() == id){
+                return candy;
+            }
+        }
+        throw new IllegalArgumentException("Candy not found");
+    }
+    public Candy findCandyBySugar(int sugar_min,int sugar_max){
+        return recursiveBinarySearchBySugarPer100(sugar_min, sugar_max, 0, _candies.size());
+    }
+
+    public Candy findCandyByPrice(int price){return _candies.getFirst();}
+    public Candy findCandyByName(int price){return _candies.getFirst();}
+    public Candy findCandyByType(int price){return _candies.getFirst();}
+
     public void add_candy(Candy candy){
         _candies.add(candy);
         _totalCost += candy.get_price();
@@ -47,21 +63,6 @@ public class Gift {
         _totalCost -= candy.get_price();
     }
 
-    public Candy findCandyById(int id){
-        for (Candy candy : _candies) {
-            if(candy.get_id() == id){
-                return candy;
-            }
-        }
-        throw new IllegalArgumentException("Candy not found");
-    }
-    public Candy findCandyBySugar(int sugar_min,int sugar_max){
-        return recursiveBinarySearch(sugar_min, sugar_max, 0, _candies.size());
-    }
-    public Candy findCandyByPrice(int price){return _candies.getFirst();}
-    public Candy findCandyByName(int price){return _candies.getFirst();}
-    public Candy findCandyByType(int price){return _candies.getFirst();}
-
     public void set_candies(ArrayList<Candy> candies){
         if (candies.isEmpty()){
             throw new IllegalArgumentException("candies size must be not empty");
@@ -70,9 +71,17 @@ public class Gift {
     }
 
     public int get_totalCost() {return _totalCost;}
-    public ArrayList<Candy> get_candies() {return _candies;}
 
-    private Candy recursiveBinarySearch(int sugar_min,int sugar_max,int start,int end){
+    public ArrayList<Candy> get_candies() {return _candies;}
+    public ArrayList<Candy> get_sorted_candies_by_name() {return sort(sortType.NAME);}
+    public ArrayList<Candy> get_sorted_candies_by_id() {return sort(sortType.ID);}
+    public ArrayList<Candy> get_sorted_candies_by_weight() {return sort(sortType.WEIGHT);}
+    public ArrayList<Candy> get_sorted_candies_by_price() {return sort(sortType.PRICE);}
+    public ArrayList<Candy> get_sorted_candies_by_type() {return sort(sortType.CANDY_TYPE);}
+
+
+
+    private Candy recursiveBinarySearchBySugarPer100(int sugar_min,int sugar_max,int start,int end){
         if (start > end) {
             throw new IllegalArgumentException("Failed to find candy in the specified sugar range.");
         }
@@ -85,9 +94,9 @@ public class Gift {
         }
 
         if (sugar < sugar_min) {
-            return recursiveBinarySearch(sugar_min, sugar_max, middle + 1, end);
+            return recursiveBinarySearchBySugarPer100(sugar_min, sugar_max, middle + 1, end);
         } else {
-            return recursiveBinarySearch(sugar_min, sugar_max, start, middle - 1);
+            return recursiveBinarySearchBySugarPer100(sugar_min, sugar_max, start, middle - 1);
         }
     }
     private ArrayList<Candy> sort (sortType sortType){
