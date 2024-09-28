@@ -8,5 +8,5 @@ import java.util.Comparator;
 
 public class SortByCandyType implements CandySortStrategy {
     @Override
-    public void sort(ArrayList<Candy> candies) {candies.sort(Comparator.comparing(Candy::get_candyType));}
+    public void sort(ArrayList<Candy> candies) {candies.sort(Comparator.comparing(Candy::getCandyType));}
 }

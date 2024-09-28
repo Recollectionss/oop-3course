@@ -8,5 +8,5 @@ import java.util.Comparator;
 
 public class SortBySugarPer100 implements CandySortStrategy {
     @Override
-    public void sort(ArrayList<Candy> candies) {candies.sort(Comparator.comparing(Candy::get_sugarPercentagePer100g));}
+    public void sort(ArrayList<Candy> candies) {candies.sort(Comparator.comparing(Candy::getSugarPercentagePer100g));}
 }

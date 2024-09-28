@@ -9,6 +9,6 @@ import java.util.Comparator;
 public class SortByPrice implements CandySortStrategy {
     @Override
     public void sort(ArrayList<Candy> candies) {
-        candies.sort(Comparator.comparing(Candy::get_price));
+        candies.sort(Comparator.comparing(Candy::getPrice));
     }
 }

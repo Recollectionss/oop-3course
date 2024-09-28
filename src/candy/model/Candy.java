@@ -12,6 +12,18 @@ public class Candy implements SortableItem {
     private int _sugarPercentagePer100g;
     private int _weight;
 
+    public void printCandyInfo(){
+        System.out.println("//////////////////////////");
+        System.out.println("ID: " + _id);
+        System.out.println("Name: " + _name);
+        System.out.println("CandyType: " + _candyType);
+        System.out.println("Sugar: " + _sugar);
+        System.out.println("Price: " + _price);
+        System.out.println("SugarPercentagePer100g: " + _sugarPercentagePer100g);
+        System.out.println("Weight: " + _weight);
+        System.out.println("//////////////////////////");
+    }
+
 
     private Candy(String name, CandyType candyType, int sugar, int price, int weight) {
         _id = ++_idCounter;
@@ -27,28 +39,28 @@ public class Candy implements SortableItem {
         this._sugarPercentagePer100g = (int) Math.ceil((double) this._sugar / this._weight * 100);
     }
 
-    public int get_id() {return _id;}
 
-    public String get_name() {return _name;}
 
-    public CandyType get_candyType() {return _candyType;}
-    public int get_sugar() {return _sugar;}
-    public int get_price() {return _price;}
-    public int get_sugarPercentagePer100g() {return _sugarPercentagePer100g;}
-    public int get_weight() {return _weight;}
+    public int getId() {return _id;}
+    public String getName() {return _name;}
+    public CandyType getCandyType() {return _candyType;}
+    public int getSugar() {return _sugar;}
+    public int getPrice() {return _price;}
+    public int getSugarPercentagePer100g() {return _sugarPercentagePer100g;}
+    public int getWeight() {return _weight;}
 
-    public void set_name(String name) {
+    public void setName(String name) {
         if (name.length() <= 5) {
             throw new IllegalArgumentException("Candy's name must have at least 5 characters");
         }
         this._name = _name;
     }
 
-    public void set_candyType(CandyType candyType) {
+    public void setCandyType(CandyType candyType) {
         this._candyType = candyType;
     }
 
-    public void set_sugar(int sugar) {
+    public void setSugar(int sugar) {
         if (sugar <= 0) {
             throw new IllegalArgumentException("Candy's sugar must have a positive value");
         }
@@ -56,14 +68,14 @@ public class Candy implements SortableItem {
         calc_sugarPercentagePer100g();
     }
 
-    public void set_price(int price) {
+    public void setPrice(int price) {
         if (price <= 1) {
             throw new IllegalArgumentException("Candy's price must have a positive value");
         }
         this._price = price;
     }
 
-    public void set_weight(int weight) {
+    public void setWeight(int weight) {
         if (weight <= 1) {
             throw new IllegalArgumentException("Candy's weight must have a positive value");
         }

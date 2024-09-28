@@ -9,7 +9,7 @@ import java.util.Comparator;
 public class SortByName implements CandySortStrategy {
     @Override
     public void sort(ArrayList<Candy> candies) {
-        candies.sort(Comparator.comparing(Candy::get_name));
+        candies.sort(Comparator.comparing(Candy::getName));
     }
 }
 

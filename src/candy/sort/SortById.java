@@ -8,5 +8,5 @@ import java.util.Comparator;
 
 public class SortById implements CandySortStrategy {
     @Override
-    public void sort(ArrayList<Candy> candies) {candies.sort(Comparator.comparing(Candy::get_id));}
+    public void sort(ArrayList<Candy> candies) {candies.sort(Comparator.comparing(Candy::getId));}
 }

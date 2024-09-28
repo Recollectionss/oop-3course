@@ -7,20 +7,23 @@ import java.util.ArrayList;
 
 public class Gift {
     private static int _idCounter = 0;
+    private String _name;
     private int _id;
     private ArrayList<Candy> _candies;
     private int _totalCost;
 
 
-    public Gift(ArrayList<Candy> candies) {
+    public Gift(String name,ArrayList<Candy> candies) {
         _id = ++_idCounter;
+        _name = name;
         _candies = new ArrayList<Candy>(candies);
         for (Candy candy : candies) {
-            _totalCost += candy.get_price();
+            _totalCost += candy.getPrice();
         }
     }
-    public Gift(){
+    public Gift(String name){
         _id = ++_idCounter;
+        _name = name;
         _candies = new ArrayList<>();
     }
 
@@ -28,18 +31,27 @@ public class Gift {
         //need use db for send query for found gift with this id
     }
 
+    public void printGiftInfo(){
+        System.out.println("//////////////////////////");
+        System.out.println("Id:" + _id);
+        System.out.println("Name:" + _name);
+        System.out.println("TotalCost:" + _totalCost);
+        System.out.println("Candies contains:" + _candies.size());
+        System.out.println("//////////////////////////");
+    }
+
     public Candy findCandyById(int id){
         for (Candy candy : _candies) {
-            if(candy.get_id() == id){
+            if(candy.getId() == id){
                 return candy;
             }
         }
         throw new IllegalArgumentException("Candy not found");
     }
 
-    public void add_candy(Candy candy){
+    public void addCandy(Candy candy){
         _candies.add(candy);
-        _totalCost += candy.get_price();
+        _totalCost += candy.getPrice();
     }
 
     public void deleteCandy(int id){
@@ -48,17 +60,25 @@ public class Gift {
         }
         Candy candy = findCandyById(id);
         _candies.remove(candy);
-        _totalCost -= candy.get_price();
+        _totalCost -= candy.getPrice();
     }
 
-    public void set_candies(ArrayList<Candy> candies){
+    public void setCandies(ArrayList<Candy> candies){
         if (candies.isEmpty()){
             throw new IllegalArgumentException("candies size must be not empty");
         }
         _candies = candies;
     }
+    public void setName(String name){
+        if (name == null){
+            throw new IllegalArgumentException("name must not be null");
+        }
+        _name = name;
+    }
 
-    public int get_totalCost() {return _totalCost;}
+    public int getId(){return _id;}
+    public String getName(){return _name;}
+    public int getTotalCost() {return _totalCost;}
     public ArrayList<Candy> get_candies() {return new ArrayList<>(_candies);}
 
 
@@ -68,7 +88,7 @@ public class Gift {
         }
 
         int middle = (start + end) / 2;
-        int sugar = _candies.get(middle).get_sugarPercentagePer100g();
+        int sugar = _candies.get(middle).getSugarPercentagePer100g();
 
         if (sugar >= sugar_min && sugar <= sugar_max) {
             return _candies.get(middle);

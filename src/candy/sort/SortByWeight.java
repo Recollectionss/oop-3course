@@ -8,5 +8,5 @@ import java.util.Comparator;
 
 public class SortByWeight implements CandySortStrategy {
     @Override
-    public void sort (ArrayList<Candy> candies) {candies.sort(Comparator.comparing(Candy::get_weight));}
+    public void sort (ArrayList<Candy> candies) {candies.sort(Comparator.comparing(Candy::getWeight));}
 }
