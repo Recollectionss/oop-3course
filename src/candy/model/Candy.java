@@ -1,5 +1,5 @@
 package candy.model;
-
+import candy.enums.CandyType;
 import candy.interfaces.SortableItem;
 
 public class Candy implements SortableItem {
@@ -147,15 +147,5 @@ public class Candy implements SortableItem {
         public Candy generateRandom(){
             return new CandyBuilder().withName("default").withCandyType(CandyType.DEFAULT).withWeight(0).withSugar(0).withPrice(0).build();
         }
-    }
-
-
-    public enum CandyType {
-        DEFAULT,
-        CHOCOLATE,
-        CARAMEL,
-        GUMMY,
-        HARD_CANDY,
-        LOLLIPOP
     }
 }
