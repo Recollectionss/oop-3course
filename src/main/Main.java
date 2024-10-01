@@ -1,3 +1,5 @@
+package main;
+
 import candy.model.Candy;
 import gift.model.Gift;
 
