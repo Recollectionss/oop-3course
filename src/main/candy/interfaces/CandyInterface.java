@@ -2,7 +2,7 @@ package candy.interfaces;
 
 import candy.enums.CandyType;
 
-public interface SortableItem {
+public interface CandyInterface {
     int getId();
     String getName();
     CandyType getCandyType() ;

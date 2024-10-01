@@ -1,8 +1,7 @@
-package candy.model;
+package main.candy.model;
 import candy.enums.CandyType;
-import candy.interfaces.SortableItem;
 
-public class Candy implements SortableItem {
+public class Candy implements candy.interfaces.CandyInterface {
     private static int _idCounter = 0;
     private final int _id;
     private String _name;

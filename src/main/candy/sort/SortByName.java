@@ -1,12 +1,11 @@
-package candy.sort;
+package main.candy.sort;
 
-import candy.model.Candy;
-import candy.interfaces.CandySortStrategy;
+import main.candy.model.Candy;
 
 import java.util.ArrayList;
 import java.util.Comparator;
 
-public class SortByName implements CandySortStrategy {
+public class SortByName implements main.candy.interfaces.CandySortStrategyInterface {
     @Override
     public void sort(ArrayList<Candy> candies) {
         candies.sort(Comparator.comparing(Candy::getName));
