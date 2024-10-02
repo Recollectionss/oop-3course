@@ -50,6 +50,7 @@ public class Main {
             throw new RuntimeException(e);
         }
         ArrayList <Gift> gifts = new ArrayList<>();
+
         int selectedOption;
         boolean exit = true;
         while(exit) {

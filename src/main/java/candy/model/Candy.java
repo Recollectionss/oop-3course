@@ -85,13 +85,6 @@ public class Candy implements candy.interfaces.CandyInterface {
 
 
     public static class CandyBuilder {
-        final String[] names = {
-                "1",
-                "2",
-                "3",
-                "4",
-                "5",
-        };
 
         String _name = "default";
         CandyType _candyType = CandyType.DEFAULT;

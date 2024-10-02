@@ -1,5 +1,5 @@
 {
-  "candies": [
+  "names": [
     "Snickers",
     "Twix",
     "Mars",
@@ -15,5 +15,13 @@
     "Crunch",
     "Toblerone",
     "Laffy Taffy"
+  ],
+  "types": [
+    "DEFAULT",
+    "CHOCOLATE",
+    "CARAMEL",
+    "GUMMY",
+    "HARD_CANDY",
+    "LOLLIPOP"
   ]
 }
