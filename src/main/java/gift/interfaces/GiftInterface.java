@@ -1,6 +1,6 @@
-package main.java.gift.interfaces;
+package gift.interfaces;
 
-import main.java.candy.model.Candy;
+import candy.model.Candy;
 
 import java.util.ArrayList;
 

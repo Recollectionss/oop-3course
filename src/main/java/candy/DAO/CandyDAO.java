@@ -1,7 +1,7 @@
-package main.java.candy.DAO;
+package candy.DAO;
 
-import main.java.candy.interfaces.CandyDAOInterface;
-import main.java.candy.model.Candy;
+import candy.interfaces.CandyDAOInterface;
+import candy.model.Candy;
 
 import java.sql.Connection;
 import java.sql.SQLException;

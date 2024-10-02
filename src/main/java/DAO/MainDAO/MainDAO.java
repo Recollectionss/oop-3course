@@ -1,6 +1,6 @@
-package main.java.DAO.MainDAO;
+package DAO.MainDAO;
 
-import main.java.DAO.interfaces.MainDAOInterface;
+import DAO.interfaces.MainDAOInterface;
 
 public class MainDAO implements MainDAOInterface {
 

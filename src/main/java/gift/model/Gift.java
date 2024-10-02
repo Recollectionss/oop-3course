@@ -1,7 +1,7 @@
-package main.java.gift.model;
+package gift.model;
 
-import main.java.candy.model.Candy;
-import main.java.gift.interfaces.GiftInterface;
+import candy.model.Candy;
+import gift.interfaces.GiftInterface;
 
 import java.util.ArrayList;
 
@@ -101,7 +101,7 @@ public class Gift implements GiftInterface {
         }
     }
 
-    public ArrayList<Candy> sort(main.java.candy.interfaces.CandySortStrategyInterface strategy){
+    public ArrayList<Candy> sort(candy.interfaces.CandySortStrategyInterface strategy){
         ArrayList<Candy> candies = new ArrayList<>(_candies);
         strategy.sort(candies);
         return candies;

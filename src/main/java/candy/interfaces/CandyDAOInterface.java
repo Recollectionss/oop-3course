@@ -1,6 +1,6 @@
-package main.java.candy.interfaces;
+package candy.interfaces;
 
-import main.java.candy.model.Candy;
+import candy.model.Candy;
 
 import java.sql.SQLException;
 import java.util.ArrayList;

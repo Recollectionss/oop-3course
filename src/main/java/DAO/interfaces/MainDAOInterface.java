@@ -1,4 +1,4 @@
-package main.java.DAO.interfaces;
+package DAO.interfaces;
 
 public interface MainDAOInterface {
 }

@@ -1,8 +1,6 @@
-package main.java;
-
-import main.java.candy.DAO.CandyDAO;
-import main.java.candy.model.Candy;
-import main.java.gift.model.Gift;
+import candy.DAO.CandyDAO;
+import candy.model.Candy;
+import gift.model.Gift;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -44,7 +42,7 @@ public class Main {
     };
 
     public static void main(String[] args) {
-        String url = "jdbc:sqlite:program_db.sqlite";
+        String url = "jdbc:sqlite:identifier.sqlite";
         try {
             Connection connection = DriverManager.getConnection(url);
             CandyDAO candyDAO = new CandyDAO(connection);

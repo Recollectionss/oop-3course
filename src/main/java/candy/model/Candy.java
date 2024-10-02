@@ -1,7 +1,8 @@
-package main.java.candy.model;
-import main.java.candy.enums.CandyType;
+package candy.model;
+import candy.enums.CandyType;
+import recourse.JSON.model.JSON;
 
-public class Candy implements main.java.candy.interfaces.CandyInterface {
+public class Candy implements candy.interfaces.CandyInterface {
     private static int _idCounter = 0;
     private final int _id;
     private String _name;
@@ -102,7 +103,7 @@ public class Candy implements main.java.candy.interfaces.CandyInterface {
 
         public CandyBuilder withName(String name ){
             if (name.equals("default")){
-                name = names[(int) (Math.random() * names.length)];
+                name = JSON.getRandomCandyName();
             }
             this._name = name;
             return this;
