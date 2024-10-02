@@ -1,13 +1,11 @@
 package main.java;
 
-import main.java.SQLiteDB.candyDB.CandyDB;
 import main.java.candy.model.Candy;
 import main.java.gift.model.Gift;
 
 import java.util.ArrayList;
 
 public class Main {
-    private static CandyDB candyDb;
 
     final static String[] mainVariants ={
             "\n1. Create empty gift",
@@ -42,8 +40,6 @@ public class Main {
     };
 
     public static void main(String[] args) {
-        candyDb = new CandyDB();
-        candyDb.getConnection();
         ArrayList <Gift> gifts = new ArrayList<>();
         int selectedOption;
         boolean exit = true;
