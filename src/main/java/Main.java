@@ -1,8 +1,12 @@
 package main.java;
 
+import main.java.candy.DAO.CandyDAO;
 import main.java.candy.model.Candy;
 import main.java.gift.model.Gift;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class Main {
@@ -40,6 +44,13 @@ public class Main {
     };
 
     public static void main(String[] args) {
+        String url = "jdbc:sqlite:program_db.sqlite";
+        try {
+            Connection connection = DriverManager.getConnection(url);
+            CandyDAO candyDAO = new CandyDAO(connection);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
         ArrayList <Gift> gifts = new ArrayList<>();
         int selectedOption;
         boolean exit = true;

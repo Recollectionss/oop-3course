@@ -11,38 +11,61 @@ import java.util.ArrayList;
 public class CandyDAO implements CandyDAOInterface {
     Connection _connection;
     public CandyDAO(Connection connection) {
+        if(connection == null) {
+            throw new NullPointerException("connection is null");
+        }
         this._connection = connection;
+
         try {
             if (!checkTable()){
                 createTable();
                 System.out.println("Table created");
+            }else{
+                System.out.println("Table already exists");
             }
+            System.out.println("Connection established");
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
     @Override
     public void create(Candy candy) throws SQLException {
+        String sqlQuery = "";
+        try(Statement statement = _connection.createStatement()) {
 
+        }
     }
 
     @Override
     public void delete(int id) throws SQLException {
+        String sqlQuery = "";
+        try(Statement statement = _connection.createStatement()) {
 
+        }
     }
 
     @Override
     public void update(Candy candy) throws SQLException {
+        String sqlQuery = "";
+        try(Statement statement = _connection.createStatement()) {
 
+        }
     }
 
     @Override
     public void select(int id) throws SQLException {
+        String sqlQuery = "";
+        try(Statement statement = _connection.createStatement()) {
 
+        }
     }
 
     @Override
     public ArrayList<Candy> selectAll() throws SQLException {
+        String sqlQuery = "";
+        try(Statement statement = _connection.createStatement()) {
+
+        }
         return null;
     }
 
