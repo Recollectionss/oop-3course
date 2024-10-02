@@ -1,6 +1,6 @@
-package candy.interfaces;
+package main.java.candy.interfaces;
 
-import candy.enums.CandyType;
+import main.java.candy.enums.CandyType;
 
 public interface CandyInterface {
     int getId();

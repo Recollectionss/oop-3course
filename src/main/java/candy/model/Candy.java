@@ -1,7 +1,7 @@
-package main.candy.model;
-import candy.enums.CandyType;
+package main.java.candy.model;
+import main.java.candy.enums.CandyType;
 
-public class Candy implements candy.interfaces.CandyInterface {
+public class Candy implements main.java.candy.interfaces.CandyInterface {
     private static int _idCounter = 0;
     private final int _id;
     private String _name;

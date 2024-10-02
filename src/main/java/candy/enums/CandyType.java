@@ -1,4 +1,4 @@
-package candy.enums;
+package main.java.candy.enums;
 
 public enum CandyType {
     DEFAULT,

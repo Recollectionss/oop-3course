@@ -1,6 +1,6 @@
-package main.candy.interfaces;
+package main.java.candy.interfaces;
 
-import main.candy.model.Candy;
+import main.java.candy.model.Candy;
 
 import java.util.ArrayList;
 

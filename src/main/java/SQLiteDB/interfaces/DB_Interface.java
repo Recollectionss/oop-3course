@@ -1,11 +1,8 @@
-package main.SQLiteDB.interfaces;
-
-import java.sql.Connection;
+package main.java.SQLiteDB.interfaces;
 
 public interface DB_Interface {
-    Connection connection = null;
 
-    Connection getConnection();
+    void getConnection();
     void closeConnection();
     void create();
     void delete();

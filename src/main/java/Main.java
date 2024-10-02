@@ -1,11 +1,14 @@
-package main;
+package main.java;
 
-import candy.model.Candy;
-import gift.model.Gift;
+import main.java.SQLiteDB.candyDB.CandyDB;
+import main.java.candy.model.Candy;
+import main.java.gift.model.Gift;
 
 import java.util.ArrayList;
 
 public class Main {
+    private static CandyDB candyDb;
+
     final static String[] mainVariants ={
             "\n1. Create empty gift",
             "2. Create fill in gift",
@@ -39,6 +42,8 @@ public class Main {
     };
 
     public static void main(String[] args) {
+        candyDb = new CandyDB();
+        candyDb.getConnection();
         ArrayList <Gift> gifts = new ArrayList<>();
         int selectedOption;
         boolean exit = true;
@@ -72,6 +77,9 @@ public class Main {
                 break;
             }
             case 3:
+
+                break;
+            case 0:
                 exit = false;
                 break;
             default:
@@ -170,8 +178,8 @@ public class Main {
             try {
 
                 input = Integer.parseInt(System.console().readLine());
-                if (input <= 0){
-                    System.out.println("Please enter a valid number.( > 0)");
+                if (input < 0){
+                    System.out.println("Please enter a valid number.( => 0)");
                 }else {
                     exit = true;
                 }
