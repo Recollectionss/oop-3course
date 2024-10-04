@@ -51,7 +51,6 @@ public class Main {
         }
         Candy candy = Candy.CandyFactory.generateRandom();
         candy.printCandyInfo();
-
         ArrayList <Gift> gifts = new ArrayList<>();
 
         int selectedOption;
