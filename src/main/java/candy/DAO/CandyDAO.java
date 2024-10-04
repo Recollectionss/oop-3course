@@ -9,16 +9,16 @@ import java.util.ArrayList;
 
 public class CandyDAO implements CandyDAOInterface {
 
-    final static String createQuery ="INSERT INTO Candy(name, type, price, weight, sugar, sugar_per_100g) VALUES (?,?,?,?,?,?)";
-    final static String deleteQuery = "DELETE FROM Candy WHERE id = ?";
-    final static String updateQuery = "UPDATE Candy SET name = ?, type = ?, price = ?, weight = ?, sugar = ?, sugar_per_100g = ? WHERE id = ?";
-    final static String selectQuery = "SELECT * FROM Candy WHERE id = ?";
-    final static String selectAllFromGiftQuery = "SELECT * FROM Candy WHERE giftId = ?";
-    final static String checkTableExistQuery = "SELECT id FROM Candy";
-    final static String selectMaxIdQuery = "SELECT id FROM Candy ORDER BY id DESC LIMIT 1";
-    final static String createTableQuery = "" +
+    final static String _createQuery ="INSERT INTO Candy(name, type, price, weight, sugar, sugar_per_100g) VALUES (?,?,?,?,?,?)";
+    final static String _deleteQuery = "DELETE FROM Candy WHERE id = ?";
+    final static String _updateQuery = "UPDATE Candy SET name = ?, type = ?, price = ?, weight = ?, sugar = ?, sugar_per_100g = ? WHERE id = ?";
+    final static String _selectQuery = "SELECT * FROM Candy WHERE id = ?";
+    final static String _selectAllFromGiftQuery = "SELECT * FROM Candy WHERE giftId = ?";
+    final static String _checkTableExistQuery = "SELECT id FROM Candy";
+    final static String _selectMaxIdQuery = "SELECT id FROM Candy ORDER BY id DESC LIMIT 1";
+    final static String _createTableQuery =
             "CREATE TABLE IF NOT EXISTS Candy(" +
-            "id INTEGER PRIMARY KEY AUTOINCREMENT," +
+            "id INTEGER UNIQUE PRIMARY KEY AUTOINCREMENT," +
             "name TEXT," +
             "type TEXT," +
             "price INTEGER," +
@@ -51,7 +51,7 @@ public class CandyDAO implements CandyDAOInterface {
     }
     @Override
     public void create(Candy candy) throws SQLException {
-        try(PreparedStatement statement = prepareStatement(createQuery,candy)) {
+        try(PreparedStatement statement = prepareStatement(_createQuery,candy)) {
 
             statement.execute();
         }
@@ -59,7 +59,7 @@ public class CandyDAO implements CandyDAOInterface {
 
     @Override
     public void delete(int id) throws SQLException {
-        try(PreparedStatement statement = _connection.prepareStatement(deleteQuery)) {
+        try(PreparedStatement statement = _connection.prepareStatement(_deleteQuery)) {
             statement.setInt(1,id);
 
             statement.execute();
@@ -68,7 +68,7 @@ public class CandyDAO implements CandyDAOInterface {
 
     @Override
     public void update(Candy candy) throws SQLException {
-        try(java.sql.PreparedStatement statement = prepareStatement(updateQuery,candy)) {
+        try(java.sql.PreparedStatement statement = prepareStatement(_updateQuery,candy)) {
             statement.setInt(7, candy.getId());
 
             statement.execute();
@@ -77,7 +77,7 @@ public class CandyDAO implements CandyDAOInterface {
 
     @Override
     public Candy select(int id) throws SQLException {
-        try (PreparedStatement statement = _connection.prepareStatement(selectQuery)) {
+        try (PreparedStatement statement = _connection.prepareStatement(_selectQuery)) {
             statement.setInt(1, id);
             try (ResultSet rs = statement.executeQuery()) {
                 if (rs.next()) {
@@ -98,7 +98,7 @@ public class CandyDAO implements CandyDAOInterface {
 
     @Override
     public ArrayList<Candy> selectAllFromCurrentGift(int giftId) throws SQLException {
-        try(PreparedStatement statement = _connection.prepareStatement(selectAllFromGiftQuery)) {
+        try(PreparedStatement statement = _connection.prepareStatement(_selectAllFromGiftQuery)) {
             statement.setInt(1,giftId);
 
             ArrayList<Candy> candies = new ArrayList<>();
@@ -124,7 +124,7 @@ public class CandyDAO implements CandyDAOInterface {
     @Override
     public boolean checkTable() {
         try (Statement statement = _connection.createStatement()){
-            statement.execute(checkTableExistQuery);
+            statement.execute(_checkTableExistQuery);
             return true;
         } catch (SQLException e) {
             System.out.println("Table not exists" + e.getMessage());
@@ -135,13 +135,13 @@ public class CandyDAO implements CandyDAOInterface {
     @Override
     public void createTable() throws SQLException {
         try (Statement statement = _connection.createStatement()){
-            statement.execute(createTableQuery);
+            statement.execute(_createTableQuery);
         }
     }
 
     @Override
     public int selectWithMaxId()throws SQLException{
-        try(PreparedStatement statement = _connection.prepareStatement(selectMaxIdQuery)) {
+        try(PreparedStatement statement = _connection.prepareStatement(_selectMaxIdQuery)) {
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
                     return resultSet.getInt("id");
