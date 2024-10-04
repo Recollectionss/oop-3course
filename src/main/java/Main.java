@@ -49,6 +49,9 @@ public class Main {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+        Candy candy = Candy.CandyFactory.generateRandom();
+        candy.printCandyInfo();
+
         ArrayList <Gift> gifts = new ArrayList<>();
 
         int selectedOption;

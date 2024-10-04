@@ -104,7 +104,7 @@ public class Candy implements candy.interfaces.CandyInterface {
 
         public CandyBuilder withCandyType(CandyType _candyType) {
             if (_candyType == CandyType.DEFAULT){
-                _candyType = CandyType.HARD_CANDY;
+                _candyType = JSON.getRandomCandyType();
             }
             this._candyType = _candyType;
             return this;
@@ -149,7 +149,7 @@ public class Candy implements candy.interfaces.CandyInterface {
         }
     }
     public static class CandyFactory{
-        public Candy generateRandom(){
+        public static Candy generateRandom(){
             return new CandyBuilder().withName("default").withCandyType(CandyType.DEFAULT).withWeight(0).withSugar(0).withPrice(0).build();
         }
     }

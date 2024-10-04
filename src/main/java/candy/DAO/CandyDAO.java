@@ -4,6 +4,7 @@ import candy.interfaces.CandyDAOInterface;
 import candy.model.Candy;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
@@ -30,9 +31,10 @@ public class CandyDAO implements CandyDAOInterface {
     }
     @Override
     public void create(Candy candy) throws SQLException {
-        String sqlQuery = "";
-        try(Statement statement = _connection.createStatement()) {
+        String sqlQuery = "INSERT INTO Candy(name, type, price, weight, sugar, sugar_per_100g) VALUES (?,?,?,?,?,?)";
+        try(java.sql.PreparedStatement statement = prepareStatement(sqlQuery,candy)) {
 
+            statement.execute();
         }
     }
 
@@ -46,9 +48,11 @@ public class CandyDAO implements CandyDAOInterface {
 
     @Override
     public void update(Candy candy) throws SQLException {
-        String sqlQuery = "";
-        try(Statement statement = _connection.createStatement()) {
+        String sqlQuery = "UPDATE Candy SET name = ?, type = ?, price = ?, weight = ?, sugar = ?, sugar_per_100g = ? WHERE id = ?";
+        try(java.sql.PreparedStatement statement = prepareStatement(sqlQuery,candy)) {
+            statement.setInt(6, candy.getId());
 
+            statement.execute();
         }
     }
 
@@ -95,5 +99,18 @@ public class CandyDAO implements CandyDAOInterface {
         try (Statement statement = _connection.createStatement()){
             statement.execute(sqlQuery);
         }
+    }
+
+    private PreparedStatement prepareStatement(String sql, Candy candy) throws SQLException {
+        PreparedStatement statement = _connection.prepareStatement(sql);
+
+        statement.setString(1, candy.getName());
+        statement.setString(2, String.valueOf(candy.getCandyType()));
+        statement.setInt(3, candy.getPrice());
+        statement.setInt(4, candy.getWeight());
+        statement.setInt(5, candy.getSugar());
+        statement.setInt(6,candy.getSugarPercentagePer100g());
+
+        return statement;
     }
 }

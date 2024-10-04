@@ -46,7 +46,8 @@ public class JSON {
             Random random = new Random();
             int randomIndex = random.nextInt(namesArray.size());
 
-            return (CandyType) namesArray.get(randomIndex);
+            String candyTypeStr = (String) namesArray.get(randomIndex);
+            return CandyType.valueOf(candyTypeStr);
         }catch (IOException | ParseException e) {
             e.printStackTrace();
             return null;
