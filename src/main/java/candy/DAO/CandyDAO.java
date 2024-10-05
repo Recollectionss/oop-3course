@@ -31,24 +31,8 @@ public class CandyDAO implements CandyDAOInterface {
     Connection _connection;
 
 
-    public CandyDAO(Connection connection) {
-        if(connection == null) {
-            throw new NullPointerException("connection is null");
-        }
-        this._connection = connection;
+    public CandyDAO() {}
 
-        try {
-            if (!checkTable()){
-                createTable();
-                System.out.println("Table created");
-            }else{
-                System.out.println("Table already exists");
-            }
-            System.out.println("Connection established");
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
     @Override
     public void create(Candy candy) throws SQLException {
         try(PreparedStatement statement = prepareStatement(_createQuery,candy)) {
@@ -151,7 +135,7 @@ public class CandyDAO implements CandyDAOInterface {
         return -1;
     }
 
-    private PreparedStatement prepareStatement(String sql, Candy candy) throws SQLException {
+    public PreparedStatement prepareStatement(String sql, Candy candy) throws SQLException {
         PreparedStatement statement = _connection.prepareStatement(sql);
 
         statement.setString(1, candy.getName());
@@ -164,4 +148,28 @@ public class CandyDAO implements CandyDAOInterface {
 
         return statement;
     }
+
+    public CandyDAO setConnection(Connection connection) {
+        if(connection == null) {
+            throw new NullPointerException("connection is null");
+        }
+        this._connection = connection;
+
+        try {
+            if (!checkTable()){
+                createTable();
+                System.out.println("Table created");
+            }
+            return this;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public String getCreateQuery() {return _createQuery;}
+    public String getUpdateQuery() {return _updateQuery;}
+    public String getDeleteQuery() {return _deleteQuery;}
+    public String getSelectQuery() {return _selectQuery;}
+    public String getSelectAllQuery() {return _selectAllFromGiftQuery;}
 }
