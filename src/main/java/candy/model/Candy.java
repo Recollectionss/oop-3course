@@ -48,6 +48,7 @@ public class Candy implements candy.interfaces.CandyInterface {
 
 
     public int getId() {return _id;}
+    public int getGiftId() {return _giftId;}
     public String getName() {return _name;}
     public CandyType getCandyType() {return _candyType;}
     public int getSugar() {return _sugar;}
@@ -55,6 +56,7 @@ public class Candy implements candy.interfaces.CandyInterface {
     public int getSugarPercentagePer100g() {return calc_sugarPercentagePer100g();}
     public int getWeight() {return _weight;}
 
+    public void setGiftId(int giftId) {this._giftId = giftId;}
     public void setName(String name) {
         if (name.length() <= 5) {
             throw new IllegalArgumentException("Candy's name must have at least 5 characters");

@@ -9,11 +9,11 @@ import java.util.ArrayList;
 
 public class CandyDAO implements CandyDAOInterface {
 
-    final static String _createQuery ="INSERT INTO Candy(name, type, price, weight, sugar, sugar_per_100g) VALUES (?,?,?,?,?,?)";
+    final static String _createQuery ="INSERT INTO Candy(name, type, price, weight, sugar, sugar_per_100g, gift_id) VALUES (?,?,?,?,?,?,?)";
     final static String _deleteQuery = "DELETE FROM Candy WHERE id = ?";
-    final static String _updateQuery = "UPDATE Candy SET name = ?, type = ?, price = ?, weight = ?, sugar = ?, sugar_per_100g = ? WHERE id = ?";
+    final static String _updateQuery = "UPDATE Candy SET name = ?, type = ?, price = ?, weight = ?, sugar = ?, sugar_per_100g = ? gift_id = ? WHERE id = ?";
     final static String _selectQuery = "SELECT * FROM Candy WHERE id = ?";
-    final static String _selectAllFromGiftQuery = "SELECT * FROM Candy WHERE giftId = ?";
+    final static String _selectAllFromGiftQuery = "SELECT * FROM Candy WHERE gift_id = ?";
     final static String _checkTableExistQuery = "SELECT id FROM Candy";
     final static String _selectMaxIdQuery = "SELECT id FROM Candy ORDER BY id DESC LIMIT 1";
     final static String _createTableQuery =
@@ -69,7 +69,7 @@ public class CandyDAO implements CandyDAOInterface {
     @Override
     public void update(Candy candy) throws SQLException {
         try(java.sql.PreparedStatement statement = prepareStatement(_updateQuery,candy)) {
-            statement.setInt(7, candy.getId());
+            statement.setInt(8, candy.getId());
 
             statement.execute();
         }
@@ -160,6 +160,7 @@ public class CandyDAO implements CandyDAOInterface {
         statement.setInt(4, candy.getWeight());
         statement.setInt(5, candy.getSugar());
         statement.setInt(6,candy.getSugarPercentagePer100g());
+        statement.setInt(7,candy.getGiftId());
 
         return statement;
     }

@@ -1,14 +1,14 @@
 package gift.interfaces;
 
-import candy.model.Candy;
+import gift.model.Gift;
 
 import java.sql.SQLException;
 
 public interface GiftDAOInterface {
-    void create(Candy candy)throws SQLException;
+    void create(Gift gift)throws SQLException;
     void delete(int id)throws SQLException;
-    void update(Candy candy)throws SQLException;
-    void select(int id)throws SQLException;
+    void update(Gift gift)throws SQLException;
+    Gift select(int id)throws SQLException;
     int selectWithMaxId()throws SQLException;
 
     boolean checkTable() throws SQLException;

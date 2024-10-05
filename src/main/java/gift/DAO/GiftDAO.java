@@ -1,13 +1,12 @@
 package gift.DAO;
 
-import candy.model.Candy;
 import gift.interfaces.GiftDAOInterface;
+import gift.model.Gift;
 
-import java.sql.Connection;
-import java.sql.SQLException;
+import java.sql.*;
 
 public class GiftDAO implements GiftDAOInterface {
-    final static String _createQuery ="INSERT INTO Gift(name, total_price) VALUES (?,?,?)";
+    final static String _createQuery ="INSERT INTO Gift(name, total_cost) VALUES (?,?)";
     final static String _deleteQuery = "DELETE FROM Gift WHERE id = ?";
     final static String _updateQuery = "UPDATE Gift SET name = ?, total_price = ? WHERE id = ?";
     final static String _selectQuery = "SELECT * FROM Gift WHERE id = ?";
@@ -17,7 +16,7 @@ public class GiftDAO implements GiftDAOInterface {
             "CREATE TABLE IF NOT EXISTS Gift(" +
             "id INTEGER UNIQUE PRIMARY KEY AUTOINCREMENT," +
             "name TEXT," +
-            "total_price INTEGER," +
+            "total_cost INTEGER" +
             ");";
 
     Connection _connection = null;
@@ -42,37 +41,68 @@ public class GiftDAO implements GiftDAOInterface {
     }
 
     @Override
-    public void create(Candy candy) throws SQLException {
+    public void create(Gift gift) throws SQLException {
+        try (PreparedStatement statement = _connection.prepareStatement(_createQuery)) {
+            statement.setString(1, gift.getName());
+            statement.setInt(2,gift.getTotalCost());
 
+            statement.executeUpdate();
+        }
     }
 
     @Override
     public void delete(int id) throws SQLException {
+        try (PreparedStatement statement = _connection.prepareStatement(_deleteQuery)) {
+            statement.setInt(1, id);
 
+            statement.executeUpdate();
+        }
     }
 
     @Override
-    public void update(Candy candy) throws SQLException {
+    public void update(Gift gift) throws SQLException {
+        try (PreparedStatement statement = _connection.prepareStatement(_updateQuery)) {
+            statement.setString(1, gift.getName());
+            statement.setInt(2, gift.getTotalCost());
+            statement.setInt(3, gift.getId());
 
+            statement.executeUpdate();
+        }
     }
 
     @Override
-    public void select(int id) throws SQLException {
+    public Gift select(int id) throws SQLException {
+        try(PreparedStatement statement = _connection.prepareStatement(_selectQuery)) {
+            statement.setInt(1, id);
+            ResultSet result = statement.executeQuery();
 
+            return new Gift(result.getInt("id"),result.getString("name"));
+        }
     }
 
     @Override
     public int selectWithMaxId() throws SQLException {
-        return 0;
+        try(PreparedStatement statement = _connection.prepareStatement(_selectMaxIdQuery)) {
+            ResultSet result = statement.executeQuery();
+            return result.getInt("id");
+        }
     }
 
     @Override
     public boolean checkTable() throws SQLException {
-        return false;
+        try(PreparedStatement statement = _connection.prepareStatement(_checkTableExistQuery)) {
+            statement.executeQuery();
+            return true;
+        } catch (SQLException e) {
+            System.out.println("Table not exists" + e.getMessage());
+            return false;
+        }
     }
 
     @Override
     public void createTable() throws SQLException {
-
+        try(Statement statement = _connection.createStatement()) {
+            statement.execute(_createTableQuery);
+        }
     }
 }
