@@ -1,5 +1,6 @@
 import candy.DAO.CandyDAO;
 import candy.model.Candy;
+import gift.DAO.GiftDAO;
 import gift.model.Gift;
 
 import java.sql.Connection;
@@ -45,13 +46,13 @@ public class Main {
         String url = "jdbc:sqlite:identifier.sqlite";
         try {
             Connection connection = DriverManager.getConnection(url);
+            GiftDAO giftDAO = new GiftDAO(connection);
             CandyDAO candyDAO = new CandyDAO(connection);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
         Candy candy = Candy.CandyFactory.generateRandom();
         candy.printCandyInfo();
-
         ArrayList <Gift> gifts = new ArrayList<>();
 
         int selectedOption;

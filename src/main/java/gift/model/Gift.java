@@ -7,8 +7,8 @@ import java.util.ArrayList;
 
 public class Gift implements GiftInterface {
     private static int _idCounter = 0;
-    private String _name;
     private int _id;
+    private String _name;
     private ArrayList<Candy> _candies;
     private int _totalCost;
 
@@ -27,8 +27,12 @@ public class Gift implements GiftInterface {
         _candies = new ArrayList<>();
     }
 
-    public Gift(int id){
-        //need use db for send query for found gift with this id
+    public Gift(int id, String name) {
+        if (id < _idCounter) {
+            throw new IllegalArgumentException("ID must be greater than or equal to " + _idCounter);
+        }
+        _id = id;
+        _name = name;
     }
 
     public void printGiftInfo(){

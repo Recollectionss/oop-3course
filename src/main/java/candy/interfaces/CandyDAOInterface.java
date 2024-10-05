@@ -10,8 +10,9 @@ public interface CandyDAOInterface {
     void create(Candy candy)throws SQLException;
     void delete(int id)throws SQLException;
     void update(Candy candy)throws SQLException;
-    void select(int id)throws SQLException;
-    ArrayList<Candy> selectAll()throws SQLException;
+    Candy select(int id)throws SQLException;
+    ArrayList<Candy> selectAllFromCurrentGift(int giftId)throws SQLException;
+    int selectWithMaxId()throws SQLException;
 
     boolean checkTable() throws SQLException;
     void createTable() throws SQLException;
