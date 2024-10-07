@@ -96,29 +96,4 @@ public class Gift implements GiftInterface {
     public int getTotalCost() {return _totalCost;}
     public ArrayList<Candy> get_candies() {return new ArrayList<>(_candies);}
 
-
-    private Candy recursiveBinarySearchBySugarPer100(int sugar_min,int sugar_max,int start,int end){
-        if (start > end) {
-            throw new IllegalArgumentException("Failed to find candy in the specified sugar range.");
-        }
-
-        int middle = (start + end) / 2;
-        int sugar = _candies.get(middle).getSugarPercentagePer100g();
-
-        if (sugar >= sugar_min && sugar <= sugar_max) {
-            return _candies.get(middle);
-        }
-
-        if (sugar < sugar_min) {
-            return recursiveBinarySearchBySugarPer100(sugar_min, sugar_max, middle + 1, end);
-        } else {
-            return recursiveBinarySearchBySugarPer100(sugar_min, sugar_max, start, middle - 1);
-        }
-    }
-
-    public ArrayList<Candy> sort(candy.interfaces.CandySortStrategyInterface strategy){
-        ArrayList<Candy> candies = new ArrayList<>(_candies);
-        strategy.sort(candies);
-        return candies;
-    }
 }
