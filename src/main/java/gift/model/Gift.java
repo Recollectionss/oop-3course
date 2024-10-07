@@ -7,7 +7,7 @@ import java.util.ArrayList;
 
 public class Gift implements GiftInterface {
     private static int _idCounter = 0;
-    private int _id;
+    private final int _id;
     private String _name;
     private ArrayList<Candy> _candies;
     private int _totalCost;
@@ -78,6 +78,9 @@ public class Gift implements GiftInterface {
     public void setCandies(ArrayList<Candy> candies){
         if (candies.isEmpty()){
             throw new IllegalArgumentException("candies size must be not empty");
+        }
+        for (Candy candy : candies) {
+            _totalCost += candy.getPrice();
         }
         _candies = candies;
     }

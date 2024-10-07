@@ -42,7 +42,7 @@ public class BaseDAO implements MainDAOInterface {
     }
 
 
-    public void saveGiftWithCandy(Gift gift) throws SQLException {
+    public BaseDAO saveGiftWithCandy(Gift gift) throws SQLException {
         _connection.setAutoCommit(false);
         try {
 
@@ -60,6 +60,7 @@ public class BaseDAO implements MainDAOInterface {
         }finally {
             _connection.setAutoCommit(true);
         }
+        return this;
     }
 
     public Gift getGiftWithCandy(int id) throws SQLException {

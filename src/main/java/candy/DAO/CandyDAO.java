@@ -9,9 +9,9 @@ import java.util.ArrayList;
 
 public class CandyDAO implements CandyDAOInterface {
 
-    final static String _createQuery ="INSERT INTO Candy(name, type, price, weight, sugar, sugar_per_100g, gift_id) VALUES (?,?,?,?,?,?,?)";
+    final static String _createQuery ="INSERT INTO Candy(name, type, price, weight, sugar, gift_id) VALUES (?,?,?,?,?,?)";
     final static String _deleteQuery = "DELETE FROM Candy WHERE id = ?";
-    final static String _updateQuery = "UPDATE Candy SET name = ?, type = ?, price = ?, weight = ?, sugar = ?, sugar_per_100g = ? gift_id = ? WHERE id = ?";
+    final static String _updateQuery = "UPDATE Candy SET name = ?, type = ?, price = ?, weight = ?, sugar = ?, gift_id = ? WHERE id = ?";
     final static String _selectQuery = "SELECT * FROM Candy WHERE id = ?";
     final static String _selectAllFromGiftQuery = "SELECT * FROM Candy WHERE gift_id = ?";
     final static String _checkTableExistQuery = "SELECT id FROM Candy";
@@ -143,8 +143,7 @@ public class CandyDAO implements CandyDAOInterface {
         statement.setInt(3, candy.getPrice());
         statement.setInt(4, candy.getWeight());
         statement.setInt(5, candy.getSugar());
-        statement.setInt(6,candy.getSugarPercentagePer100g());
-        statement.setInt(7,candy.getGiftId());
+        statement.setInt(6,candy.getGiftId());
 
         return statement;
     }

@@ -1,7 +1,8 @@
+import DAO.MainDAO.BaseDAO;
 import candy.model.Candy;
 import gift.model.Gift;
 
-import java.util.ArrayList;
+import java.sql.SQLException;
 
 public class Main {
 
@@ -37,11 +38,24 @@ public class Main {
             "9. Exit from this menu",
     };
 
+    static BaseDAO dao = new BaseDAO();
+    static Gift gift = null;
+    static Candy candy = null;
+
     public static void main(String[] args) {
+//        try {
+//            gift = dao.openConnection().getGiftWithCandy(1);
+//            dao.closeConnection();
+//            gift.printGiftInfo();
+//            for(Candy candy : gift.get_candies()){
+//                candy.printCandyInfo();
+//            }
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
+
         Candy candy = Candy.CandyFactory.generateRandom();
         candy.printCandyInfo();
-        ArrayList <Gift> gifts = new ArrayList<>();
-
         int selectedOption;
         boolean exit = true;
         while(exit) {
@@ -49,32 +63,43 @@ public class Main {
             selectedOption = getUserInputInt();
             switch(selectedOption) {
             case 1: {
-                Gift newGift = new Gift(getUserInputName(true));
-                gifts.add(newGift);
+                gift = new Gift(getUserInputName(true));
+                try {
+                    dao.openConnection().getGiftDAO().create(gift);
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+                gift.printGiftInfo();
                 if (getUserInputShowMenu(true)) {
-                    giftMenu(newGift);
+                    giftMenu();
                 }
                 break;
             }
             case 2: {
-                Gift newGift = new Gift(getUserInputName(true));
+                gift = new Gift(getUserInputName(true));
 
                 int candyCount = 0;
                 System.out.print("Enter candy (must be > 0): ");
                 candyCount = getUserInputInt();
 
                 for (int i = 0; i < candyCount; i++) {
-                    newGift.addCandy(new Candy.CandyFactory().generateRandom());
+                    gift.addCandy(Candy.CandyFactory.generateRandomForGift(gift.getId()));
                 }
 
-                gifts.add(newGift);
+                gift.printGiftInfo();
                 if (getUserInputShowMenu(true)) {
-                    giftMenu(newGift);
+                    giftMenu();
                 }
                 break;
             }
             case 3:
-
+                int giftId = getUserInputInt();
+                try {
+                    gift = dao.openConnection().getGiftDAO().select(giftId);
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+                giftMenu();
                 break;
             case 0:
                 exit = false;
@@ -84,7 +109,7 @@ public class Main {
             }
         }
     }
-    static void giftMenu(Gift gift) {
+    static void giftMenu() {
         int variant;
         boolean exit = true;
         while(exit) {
@@ -94,12 +119,27 @@ public class Main {
                 case 1:
                     addCandyMenu();
                     break;
-                case 2: break;
-                case 3: break;
-                case 4: break;
-                case 5: break;
-                case 6: break;
-                case 7: break;
+                case 2:{
+                    int id = getUserInputInt();
+
+                    break;
+                }
+                case 3:{
+
+                    break;
+                }case 4:{
+
+                    break;
+                }case 5:{
+
+                    break;
+                }case 6:{
+
+                    break;
+                }case 7:{
+
+                    break;
+                }
                 case 9:
                     exit = false;
                     break;

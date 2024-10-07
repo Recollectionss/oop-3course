@@ -151,16 +151,18 @@ public class Candy implements candy.interfaces.CandyInterface {
             this._price = _price;
             return this;
         }
+
         public CandyBuilder withWeight(int weight) {
-            if (weight == 0){
-                this._weight = (int)(Math.random()*100) + 1;
-            }
-            if(weight < 0){
+            if (weight == 0) {
+                this._weight = (int)(Math.random() * 100) + 1;
+            } else if (weight < 0) {
                 throw new IllegalArgumentException("Candy's weight must have a positive value");
+            } else {
+                this._weight = weight;
             }
-            this._weight = weight;
             return this;
         }
+
         public CandyBuilder withGiftId(int giftId) {
             this._giftId = giftId;
             return this;
@@ -172,10 +174,10 @@ public class Candy implements candy.interfaces.CandyInterface {
     }
     public static class CandyFactory{
         public static Candy generateRandom(){
-            return new CandyBuilder().withName("default").withCandyType(CandyType.DEFAULT).withWeight(99).withSugar(0).withPrice(0).build();
+            return new CandyBuilder().withName("default").withCandyType(CandyType.DEFAULT).withWeight(0).withSugar(0).withPrice(0).build();
         }
         public static Candy generateRandomForGift(int giftId){
-            return new CandyBuilder().withName("default").withCandyType(CandyType.DEFAULT).withWeight(99).withSugar(0).withPrice(0).withGiftId(giftId).build();
+            return new CandyBuilder().withName("default").withCandyType(CandyType.DEFAULT).withWeight(0).withSugar(0).withPrice(0).withGiftId(giftId).build();
         }
     }
 }
