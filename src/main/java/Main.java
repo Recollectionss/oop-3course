@@ -53,7 +53,6 @@ public class Main {
 //        } catch (SQLException e) {
 //            e.printStackTrace();
 //        }
-
         Candy candy = Candy.CandyFactory.generateRandom();
         candy.printCandyInfo();
         int selectedOption;

@@ -7,7 +7,9 @@ import java.util.Comparator;
 
 public class SortByPrice implements candy.interfaces.CandySortStrategyInterface {
     @Override
-    public void sort(ArrayList<Candy> candies) {
-        candies.sort(Comparator.comparing(Candy::getPrice));
+    public ArrayList<Candy> sort(ArrayList<Candy> candies) {
+        ArrayList<Candy> sorted =new ArrayList<>(candies);
+        sorted.sort(Comparator.comparing(Candy::getPrice));
+        return sorted;
     }
 }

@@ -1,8 +1,9 @@
 package candy.model;
 import candy.enums.CandyType;
+import candy.interfaces.CandyInterface;
 import recourse.JSON.model.JSON;
 
-public class Candy implements candy.interfaces.CandyInterface {
+public class Candy implements CandyInterface {
     private static int _idCounter = 0;
     private final int _id;
     private String _name;
@@ -33,6 +34,10 @@ public class Candy implements candy.interfaces.CandyInterface {
         _price = price;
         _weight = weight;
         _giftId = giftId;
+    }
+    private Candy(){
+
+        _id = 0;
     }
 
     public static void readIdCounterFromDb(int idCounter){
@@ -178,6 +183,9 @@ public class Candy implements candy.interfaces.CandyInterface {
         }
         public static Candy generateRandomForGift(int giftId){
             return new CandyBuilder().withName("default").withCandyType(CandyType.DEFAULT).withWeight(0).withSugar(0).withPrice(0).withGiftId(giftId).build();
+        }
+        public static Candy generateCandyForSearch(){
+            return  new Candy();
         }
     }
 }
