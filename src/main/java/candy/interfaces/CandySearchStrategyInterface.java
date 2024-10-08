@@ -5,5 +5,5 @@ import candy.model.Candy;
 import java.util.ArrayList;
 
 public interface CandySearchStrategyInterface {
-    Candy search(ArrayList<Candy> candies);
+    ArrayList<Candy> search(ArrayList<Candy> candies);
 }

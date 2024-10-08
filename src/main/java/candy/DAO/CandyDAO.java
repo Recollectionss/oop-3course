@@ -11,6 +11,7 @@ public class CandyDAO implements CandyDAOInterface {
 
     final static String _createQuery ="INSERT INTO Candy(name, type, price, weight, sugar, gift_id) VALUES (?,?,?,?,?,?)";
     final static String _deleteQuery = "DELETE FROM Candy WHERE id = ?";
+    final static String DELETE_WHERE_GIFT_ID = "DELETE FROM CANDY WHERE gift_id = ?";
     final static String _updateQuery = "UPDATE Candy SET name = ?, type = ?, price = ?, weight = ?, sugar = ?, gift_id = ? WHERE id = ?";
     final static String _selectQuery = "SELECT * FROM Candy WHERE id = ?";
     final static String _selectAllFromGiftQuery = "SELECT * FROM Candy WHERE gift_id = ?";
@@ -46,6 +47,12 @@ public class CandyDAO implements CandyDAOInterface {
         try(PreparedStatement statement = _connection.prepareStatement(_deleteQuery)) {
             statement.setInt(1,id);
 
+            statement.execute();
+        }
+    }
+    public void deleteWithGift(int gift_id) throws SQLException {
+        try(PreparedStatement statement = _connection.prepareStatement(DELETE_WHERE_GIFT_ID)){
+            statement.setInt(1,gift_id);
             statement.execute();
         }
     }

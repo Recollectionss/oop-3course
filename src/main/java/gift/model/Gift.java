@@ -66,11 +66,10 @@ public class Gift implements GiftInterface {
         _totalCost += candy.getPrice();
     }
 
-    public void deleteCandy(int id){
-        if (id <= 0){
-            throw new IllegalArgumentException("Id must be greater than 0");
+    public void deleteCandy(Candy candy){
+        if(!_candies.contains(candy)){
+            throw new IllegalArgumentException("Candy not found");
         }
-        Candy candy = findCandyById(id);
         _candies.remove(candy);
         _totalCost -= candy.getPrice();
     }
@@ -95,5 +94,9 @@ public class Gift implements GiftInterface {
     public String getName(){return _name;}
     public int getTotalCost() {return _totalCost;}
     public ArrayList<Candy> get_candies() {return new ArrayList<>(_candies);}
-
+    public static void readIdCounterFromDb(int idCounter){
+        if (idCounter >= 1){
+            _idCounter = idCounter;
+        }
+    }
 }

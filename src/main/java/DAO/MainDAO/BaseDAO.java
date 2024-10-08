@@ -80,6 +80,20 @@ public class BaseDAO implements MainDAOInterface {
             _connection.setAutoCommit(true);
         }
     }
+    public BaseDAO deleteGiftWithCandy(int id) throws SQLException {
+        _connection.setAutoCommit(false);
+        try{
+            _giftDAO.setConnection(_connection).delete(id);
+
+            _candyDAO.setConnection(_connection).deleteWithGift(id);
+        }catch (SQLException e){
+            _connection.rollback();
+            throw new RuntimeException(e);
+        }finally {
+            _connection.setAutoCommit(true);
+        }
+        return this;
+    }
 
     public CandyDAO getCandyDAO() {return _candyDAO;}
     public GiftDAO getGiftDAO() {return _giftDAO;}
