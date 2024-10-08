@@ -1,5 +1,6 @@
 import candy.enums.CandyType;
 import candy.model.Candy;
+import candy.search.SearchById;
 import gift.model.Gift;
 import org.junit.jupiter.api.Test;
 
@@ -45,6 +46,7 @@ public class GiftTest {
     @Test
     public void testFindCandyById() {
         Candy candy = new Candy.CandyBuilder()
+                .withId(1)
                 .withName("Candy1")
                 .withCandyType(CandyType.CHOCOLATE)
                 .withSugar(10)
@@ -56,7 +58,7 @@ public class GiftTest {
         candies.add(candy);
         Gift gift = new Gift("Gift with One Candy", candies);
 
-        assertEquals(candy, gift.findCandyById(candy.getId()));
+        assertEquals(candy, new SearchById().search(gift.get_candies(),1));
     }
 
     @Test
