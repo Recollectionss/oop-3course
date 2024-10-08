@@ -9,17 +9,13 @@ import java.util.List;
 
 public class RangeSearch {
 
-    private static List<Candy> searchByRange(ArrayList<Candy> sortedCandies, int low, int high, Comparator<Candy> comparator, RangeValueSetter rangeValueSetter) {
-        Candy lowCandy = Candy.CandyFactory.generateCandyForSearch();
-        rangeValueSetter.setRangeValue(lowCandy, low);
-        int lowIndex = Collections.binarySearch(sortedCandies, lowCandy, comparator);
+    private static List<Candy> searchByRange(ArrayList<Candy> sortedCandies, int low, int high, Comparator<Candy> comparator) {
+        int lowIndex = Collections.binarySearch(sortedCandies, new Candy.CandyBuilder().withSugar((int) ((low * sortedCandies.get(0).getWeight()) / 100.0)).build(), comparator);
         if (lowIndex < 0) {
             lowIndex = -lowIndex - 1;
         }
 
-        Candy highCandy = Candy.CandyFactory.generateCandyForSearch();
-        rangeValueSetter.setRangeValue(highCandy, high);
-        int highIndex = Collections.binarySearch(sortedCandies, highCandy, comparator);
+        int highIndex = Collections.binarySearch(sortedCandies, new Candy.CandyBuilder().withSugar((int) ((high * sortedCandies.get(0).getWeight()) / 100.0)).build(), comparator);
         if (highIndex < 0) {
             highIndex = -highIndex - 2;
         }
@@ -37,17 +33,12 @@ public class RangeSearch {
         return sortedCandies;
     }
 
-    @FunctionalInterface
-    private interface RangeValueSetter {
-        void setRangeValue(Candy candy, int value);
-    }
-
     public static List<Candy> searchBySugar(ArrayList<Candy> candies, int low, int high) {
         if (candies == null || candies.isEmpty()) {
             return Collections.emptyList();
         }
         ArrayList<Candy> sortedCandies = getSortedCandies(candies, Comparator.comparingInt(Candy::getSugar));
-        return searchByRange(sortedCandies, low, high, Comparator.comparingInt(Candy::getSugar), Candy::setSugar);
+        return searchByRange(sortedCandies, low, high, Comparator.comparingInt(Candy::getSugar));
     }
 
     public static List<Candy> searchBySugarPer100g(ArrayList<Candy> candies, int low, int high) {
@@ -55,6 +46,17 @@ public class RangeSearch {
             return Collections.emptyList();
         }
         ArrayList<Candy> sortedCandies = getSortedCandies(candies, Comparator.comparingInt(Candy::getSugarPercentagePer100g));
-        return searchByRange(sortedCandies, low, high, Comparator.comparingInt(Candy::getSugarPercentagePer100g), (candy, value) -> candy.setSugar(value));
+
+        List<Candy> result = new ArrayList<>();
+        for (Candy candy : sortedCandies) {
+            int sugarPercentage = candy.getSugarPercentagePer100g();
+            if (sugarPercentage >= low && sugarPercentage <= high) {
+                result.add(candy);
+            }
+        }
+
+        return result;
     }
+
 }
+

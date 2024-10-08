@@ -60,7 +60,7 @@ public class CandyDAO implements CandyDAOInterface {
     @Override
     public void update(Candy candy) throws SQLException {
         try(java.sql.PreparedStatement statement = prepareStatement(_updateQuery,candy)) {
-            statement.setInt(8, candy.getId());
+            statement.setInt(7, candy.getId());
 
             statement.execute();
         }

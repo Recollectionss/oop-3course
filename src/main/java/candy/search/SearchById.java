@@ -11,6 +11,6 @@ public class SearchById {
                 return candy;
             }
         }
-        throw new IllegalArgumentException("No such candy");
+        return null;
     }
 }

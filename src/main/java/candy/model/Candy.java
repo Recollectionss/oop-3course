@@ -26,8 +26,12 @@ public class Candy implements CandyInterface {
     }
 
 
-    private Candy(String name, CandyType candyType, int sugar, int price, int weight,int giftId) {
-        _id = ++_idCounter;
+    private Candy(int id,String name, CandyType candyType, int sugar, int price, int weight,int giftId) {
+        if (id == 0){
+            _id = ++_idCounter;
+        }else{
+            _id = id;
+        }
         _name = name;
         _candyType = candyType;
         _sugar = sugar;
@@ -41,14 +45,15 @@ public class Candy implements CandyInterface {
     }
 
     public static void readIdCounterFromDb(int idCounter){
-        if (idCounter >= 1){
+        if (_idCounter == 0){
             _idCounter = idCounter;
         }
     }
 
     private int calc_sugarPercentagePer100g() {
-        return (int) Math.ceil(((double) this._sugar / this._weight) * 100);
+        return (int) Math.round(((double) this._sugar / this._weight) * 100);
     }
+
 
 
 
@@ -66,7 +71,7 @@ public class Candy implements CandyInterface {
         if (name.length() <= 5) {
             throw new IllegalArgumentException("Candy's name must have at least 5 characters");
         }
-        this._name = _name;
+        this._name = name;
     }
 
     public void setCandyType(CandyType candyType) {
@@ -121,6 +126,9 @@ public class Candy implements CandyInterface {
             if (name.equals("default")){
                 name = JSON.getRandomCandyName();
             }
+            if(name.length() <= 5){
+                throw new IllegalArgumentException("Candy's name must have at least 5 characters");
+            }
             this._name = name;
             return this;
         }
@@ -138,7 +146,7 @@ public class Candy implements CandyInterface {
                 this._sugar = (int)(Math.random()*100) + 1;
                 return this;
             }
-            if (_sugar < 0){
+            if (sugar < 0){
                 throw new IllegalArgumentException("Candy's sugar must have a positive value");
             }
             this._sugar = sugar;
@@ -174,7 +182,7 @@ public class Candy implements CandyInterface {
         }
 
         public Candy build(){
-            return new Candy(_name, _candyType, _sugar, _price, _weight,_giftId);
+            return new Candy(id,_name, _candyType, _sugar, _price, _weight,_giftId);
         }
     }
     public static class CandyFactory{

@@ -66,14 +66,16 @@ public class Main {
         try {
             maxGiftId = dao.openConnection().getGiftDAO().selectWithMaxId();
             maxCandyId = dao.openConnection().getCandyDAO().selectWithMaxId();
-            Candy.readIdCounterFromDb(maxCandyId);
-            Gift.readIdCounterFromDb(maxGiftId);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
 
     public static void main(String[] args) {
+        Candy.readIdCounterFromDb(maxCandyId);
+        Gift.readIdCounterFromDb(maxGiftId);
+        System.out.println(maxCandyId);
+        System.out.println(maxGiftId);
         int selectedOption;
         boolean exit = true;
         while(exit) {
@@ -119,7 +121,7 @@ public class Main {
             case 3:
                 int giftId = getUserInputInt(0,maxGiftId);
                 try {
-                    gift = dao.openConnection().getGiftDAO().select(giftId);
+                    gift = dao.openConnection().getGiftWithCandy(giftId);
                     dao.closeConnection();
                 } catch (SQLException e) {
                     throw new RuntimeException(e);
@@ -153,6 +155,7 @@ public class Main {
                     }else{
                         System.out.println("No candys found");
                     }
+                    break;
                 }
                 case 3:{
                     int id = getUserInputInt(0,maxCandyId);
@@ -166,6 +169,7 @@ public class Main {
                 }case 4:{
                     int id = getUserInputInt(0,maxCandyId);
                     candy = new SearchById().search(gift.get_candies(),id);
+                    candy.printCandyInfo();
                     writeCustomCandyInfo();
                     try {
                         dao.openConnection().getCandyDAO().update(candy);
@@ -261,7 +265,7 @@ public class Main {
                 int min = getUserInputInt(0, 1000);
                 System.out.println("Write max sugar");
                 int max = getUserInputInt(min, 1000);
-                return (ArrayList<Candy>) RangeSearch.searchBySugar(gift.get_candies(),min,max);
+                return new ArrayList<>(RangeSearch.searchBySugar(gift.get_candies(),min,max)) ;
             }
             case 3 -> {
                 CandyType candyType;
@@ -452,6 +456,8 @@ public class Main {
 
         Candy.CandyBuilder candyBuilder = new Candy.CandyBuilder();
         candyBuilder.withGiftId(gift.getId())
+                .withId(candy.getId())
+                .withGiftId(gift.getId())
                 .withSugar(sugar)
                 .withPrice(price)
                 .withWeight(weight)
@@ -459,6 +465,7 @@ public class Main {
 
         candyBuilder.withCandyType(candyType);
         candy = candyBuilder.build();
+        candy.printCandyInfo();
     }
 
     static Scanner scanner = new Scanner(System.in);

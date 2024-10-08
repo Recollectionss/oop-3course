@@ -95,7 +95,7 @@ public class Gift implements GiftInterface {
     public int getTotalCost() {return _totalCost;}
     public ArrayList<Candy> get_candies() {return new ArrayList<>(_candies);}
     public static void readIdCounterFromDb(int idCounter){
-        if (idCounter >= 1){
+        if (_idCounter == 0){
             _idCounter = idCounter;
         }
     }
