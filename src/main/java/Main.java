@@ -98,7 +98,7 @@ public class Main {
             case 2: {
                 gift = new Gift(getUserInputName(true));
 
-                int candyCount = 0;
+                int candyCount;
                 System.out.print("Enter candy (must be > 0): ");
                 candyCount = getUserInputInt(0,100);
 
@@ -185,8 +185,10 @@ public class Main {
                     break;
                 }case 6:{
                     ArrayList<Candy> sort = actionSortCandyVariants();
-                    for(Candy candy : sort) {
-                        candy.printCandyInfo();
+                    if (sort != null){
+                        for(Candy candy : sort) {
+                            candy.printCandyInfo();
+                        }
                     }
                     break;
                 }case 7:{
@@ -216,7 +218,7 @@ public class Main {
             variant = Integer.parseInt(System.console().readLine());
             switch(variant) {
                 case 1:
-                    writeCustomCandyInfo();
+                    writeNewCandy();
                     try {
                         dao.openConnection().getCandyDAO().create(candy);
                         dao.closeConnection();
@@ -237,16 +239,19 @@ public class Main {
     }
 
     static ArrayList<Candy> actionSortCandyVariants(){
-        ArrayList<Candy> candies = new ArrayList<>();
-        printVariants(sortVariants);
-        int input = getUserInputInt(0,6);
-        switch(input) {
-            case 1 -> {return new SortById().sort(gift.get_candies());}
-            case 2 -> {return new SortBySugar().sort(gift.get_candies());}
-            case 3 -> {return new SortByName().sort(gift.get_candies());}
-            case 4 -> {return new SortByCandyType().sort(gift.get_candies());}
-            case 5 -> {return null;}
-            default -> throw new IllegalStateException("Unexpected value: " + input);
+        while (true){
+            printVariants(sortVariants);
+            int input = getUserInputInt(0,6);
+            if(input >= 0 && input <= 6){
+                switch(input) {
+                    case 1 -> {return new SortById().sort(gift.get_candies());}
+                    case 2 -> {return new SortBySugar().sort(gift.get_candies());}
+                    case 3 -> {return new SortByName().sort(gift.get_candies());}
+                    case 4 -> {return new SortByCandyType().sort(gift.get_candies());}
+                    case 5 -> {return null;}
+                    default -> throw new IllegalStateException("Unexpected value: " + input);
+                }
+            }
         }
     }
     static ArrayList<Candy> actionFindCandyVariants(){
@@ -268,17 +273,7 @@ public class Main {
                 return new ArrayList<>(RangeSearch.searchBySugar(gift.get_candies(),min,max)) ;
             }
             case 3 -> {
-                CandyType candyType;
-                System.out.println("0. Default \n1. CHOCOLATE \n2. CARAMEL \n3. GUMMY \n4. HARD_CANDY \n5. LOLLIPOP \n");
-                int switchType = getUserInputInt(0, 5);
-                candyType = switch (switchType) {
-                    case 1 -> CandyType.CHOCOLATE;
-                    case 2 -> CandyType.CARAMEL;
-                    case 3 -> CandyType.GUMMY;
-                    case 4 -> CandyType.HARD_CANDY;
-                    case 5 -> CandyType.LOLLIPOP;
-                    default -> throw new IllegalStateException("Unexpected value: " + switchType);
-                };
+                CandyType candyType = selectType();
                 return new SearchByCandyType().search(gift.get_candies(), candyType);
             }
             case 4 -> {return null;}
@@ -314,10 +309,9 @@ public class Main {
     private static boolean getUserInputShowMenu(boolean variant){
         String variantName = variant ? "Gift" : "Candy";
         System.out.print("Show menu about this " + variantName + " :  y/n");
-        String input = "";
+        String input;
 
-        boolean exit = false;
-        while (!exit) {
+        while (true) {
             input = System.console().readLine();
             if (input.equals("y") || input.equals("n")) {
                 break;
@@ -350,121 +344,121 @@ public class Main {
         return input;
     }
 
-    static void writeCustomCandyInfo() {
-        boolean changeType = false;
-
+    static void writeNewCandy(){
         String name;
         int weight;
         int price;
         int sugar;
         CandyType candyType;
 
-        if (candy == null) {
-            name = "default";
-            weight = 0;
-            price = 0;
-            sugar = 0;
-            candyType = CandyType.DEFAULT;
+        name = "default";
+        weight = 0;
+        price = 0;
+        sugar = 0;
+        candyType = CandyType.DEFAULT;
 
-            System.out.println("Need custom name? (y/n): ");
-            if (getUserConfirmation()) {
-                System.out.println("Enter name: ");
-                name = getUserInputName(false);
-            }
-
-            System.out.println("Need custom price? (y/n): ");
-            if (getUserConfirmation()) {
-                System.out.println("Enter price: ");
-                price = getUserInputInt(1, 1000);
-            }
-
-            System.out.println("Need custom weight? (y/n): ");
-            if (getUserConfirmation()) {
-                System.out.println("Enter weight: ");
-                weight = getUserInputInt(1, 1000);
-            }
-
-            System.out.println("Need custom sugar content? (y/n): ");
-            if (getUserConfirmation()) {
-                System.out.println("Enter sugar content: ");
-                sugar = getUserInputInt(1, 1000);
-            }
-
-            System.out.println("Need custom type of candy? (y/n): ");
-            if (getUserConfirmation()) {
-                changeType = true;
-            }
-
-        } else {
-
-            System.out.println("Current candy values:");
-            System.out.println("Name: " + candy.getName());
-            System.out.println("Price: " + candy.getPrice());
-            System.out.println("Weight: " + candy.getWeight());
-            System.out.println("Sugar: " + candy.getSugar());
-            System.out.println("Type: " + candy.getCandyType());
-
-            name = candy.getName();
-            price = candy.getPrice();
-            weight = candy.getWeight();
-            sugar = candy.getSugar();
-            candyType = candy.getCandyType();
-
-            System.out.println("Change candy name? (y/n): ");
-            if (getUserConfirmation()) {
-                System.out.println("Enter name (empty for random): ");
-                name = getUserInputName(false);
-            }
-
-            System.out.println("Change candy price? (y/n): ");
-            if (getUserConfirmation()) {
-                System.out.println("Enter price (0 for random value): ");
-                price = getUserInputInt(0, 1000);
-            }
-
-            System.out.println("Change candy weight? (y/n): ");
-            if (getUserConfirmation()) {
-                System.out.println("Enter weight (0 for random value): ");
-                weight = getUserInputInt(0, 1000);
-            }
-
-            System.out.println("Change sugar content? (y/n): ");
-            if (getUserConfirmation()) {
-                System.out.println("Enter sugar content (0 for random value): ");
-                sugar = getUserInputInt(0, 1000);
-            }
-
-            System.out.println("Change type of candy? (y/n): ");
-            if (getUserConfirmation()) {
-                changeType = true;
-            }
+        System.out.println("Need custom name? (y/n): ");
+        if (getUserConfirmation()) {
+            System.out.println("Enter name: ");
+            name = getUserInputName(false);
         }
 
-        if (changeType) {
-            System.out.println("Candy type: ");
-            System.out.println("0. Default \n1. CHOCOLATE \n2. CARAMEL \n3. GUMMY \n4. HARD_CANDY \n5. LOLLIPOP \n");
-            int switchType = getUserInputInt(0, 5);
-            candyType = switch (switchType) {
-                case 1 -> CandyType.CHOCOLATE;
-                case 2 -> CandyType.CARAMEL;
-                case 3 -> CandyType.GUMMY;
-                case 4 -> CandyType.HARD_CANDY;
-                case 5 -> CandyType.LOLLIPOP;
-                default -> throw new IllegalStateException("Unexpected value: " + switchType);
-            };
+        System.out.println("Need custom price? (y/n): ");
+        if (getUserConfirmation()) {
+            System.out.println("Enter price: ");
+            price = getUserInputInt(1, 1000);
         }
 
-        Candy.CandyBuilder candyBuilder = new Candy.CandyBuilder();
-        candyBuilder.withGiftId(gift.getId())
-                .withId(candy.getId())
+        System.out.println("Need custom weight? (y/n): ");
+        if (getUserConfirmation()) {
+            System.out.println("Enter weight: ");
+            weight = getUserInputInt(1, 1000);
+        }
+
+        System.out.println("Need custom sugar content? (y/n): ");
+        if (getUserConfirmation()) {
+            System.out.println("Enter sugar content: ");
+            sugar = getUserInputInt(1, 1000);
+        }
+
+        System.out.println("Need custom type of candy? (y/n): ");
+        if (getUserConfirmation()) {
+            candyType = selectType();
+        }
+
+        candy = new Candy.CandyBuilder()
                 .withGiftId(gift.getId())
                 .withSugar(sugar)
                 .withPrice(price)
                 .withWeight(weight)
-                .withName(name);
+                .withName(name)
+                .withCandyType(candyType)
+                .build();
 
-        candyBuilder.withCandyType(candyType);
-        candy = candyBuilder.build();
+        candy.printCandyInfo();
+    }
+
+
+    static void writeCustomCandyInfo() {
+        String name;
+        int weight;
+        int price;
+        int sugar;
+        CandyType candyType;
+
+
+        System.out.println("Current candy values:");
+        System.out.println("Name: " + candy.getName());
+        System.out.println("Price: " + candy.getPrice());
+        System.out.println("Weight: " + candy.getWeight());
+        System.out.println("Sugar: " + candy.getSugar());
+        System.out.println("Type: " + candy.getCandyType());
+
+        name = candy.getName();
+        price = candy.getPrice();
+        weight = candy.getWeight();
+        sugar = candy.getSugar();
+        candyType = candy.getCandyType();
+
+        System.out.println("Change candy name? (y/n): ");
+        if (getUserConfirmation()) {
+            System.out.println("Enter name (empty for random): ");
+            name = getUserInputName(false);
+        }
+
+        System.out.println("Change candy price? (y/n): ");
+        if (getUserConfirmation()) {
+            System.out.println("Enter price (0 for random value): ");
+            price = getUserInputInt(0, 1000);
+        }
+
+        System.out.println("Change candy weight? (y/n): ");
+        if (getUserConfirmation()) {
+            System.out.println("Enter weight (0 for random value): ");
+            weight = getUserInputInt(0, 1000);
+        }
+
+        System.out.println("Change sugar content? (y/n): ");
+        if (getUserConfirmation()) {
+            System.out.println("Enter sugar content (0 for random value): ");
+            sugar = getUserInputInt(0, 1000);
+        }
+
+        System.out.println("Change type of candy? (y/n): ");
+        if (getUserConfirmation()) {
+            candyType = selectType();
+        }
+
+        candy = new Candy.CandyBuilder()
+                .withGiftId(gift.getId())
+                .withId(candy.getId())
+                .withSugar(sugar)
+                .withPrice(price)
+                .withWeight(weight)
+                .withName(name)
+                .withCandyType(candyType)
+                .build();
+
         candy.printCandyInfo();
     }
 
@@ -474,4 +468,26 @@ public class Main {
         return input.equalsIgnoreCase("y");
     }
 
+    static CandyType selectType(){
+        CandyType candyType;
+
+        while(true){
+            System.out.println("Candy type: ");
+            System.out.println("0. Default \n1. CHOCOLATE \n2. CARAMEL \n3. GUMMY \n4. HARD_CANDY \n5. LOLLIPOP \n");
+            int switchType = getUserInputInt(0, 5);
+            if(switchType >= 0 && switchType <= 5){
+                candyType = switch (switchType) {
+                    case 0 -> CandyType.DEFAULT;
+                    case 1 -> CandyType.CHOCOLATE;
+                    case 2 -> CandyType.CARAMEL;
+                    case 3 -> CandyType.GUMMY;
+                    case 4 -> CandyType.HARD_CANDY;
+                    case 5 -> CandyType.LOLLIPOP;
+                    default -> throw new IllegalStateException("Unexpected value: " + switchType);
+                };
+                return candyType;
+            }
+            System.out.println("Unexpected value: " + switchType);
+        }
+    }
 }
