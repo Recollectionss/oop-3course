@@ -21,7 +21,7 @@ public class Main {
             "\n1. Create empty gift",
             "2. Create fill in gift",
             "3. Find gift",
-            "0. Exit\n",
+            "4. Exit\n",
     };
     final static String[] giftVariants ={
             "Gift menu",
@@ -80,7 +80,7 @@ public class Main {
         boolean exit = true;
         while(exit) {
             printVariants(mainVariants);
-            selectedOption = getUserInputInt(0,3);
+            selectedOption = getUserInputInt(0,4);
             switch(selectedOption) {
             case 1: {
                 gift = new Gift(getUserInputName(true));
@@ -128,7 +128,7 @@ public class Main {
                 }
                 giftMenu();
                 break;
-            case 0:
+            case 4:
                 exit = false;
                 break;
             default:
@@ -167,14 +167,14 @@ public class Main {
                     }
                     break;
                 }case 4:{
+                    try {
                     int id = getUserInputInt(0,maxCandyId);
                     candy = new SearchById().search(gift.get_candies(),id);
                     candy.printCandyInfo();
                     writeCustomCandyInfo();
-                    try {
                         dao.openConnection().getCandyDAO().update(candy);
                     } catch (SQLException e) {
-                        throw new RuntimeException(e);
+                        System.out.println(e);
                     }
                     break;
                 }case 5:{
@@ -296,7 +296,7 @@ public class Main {
         boolean exit = false;
         while (!exit) {
             name = System.console().readLine();
-            if (!name.isEmpty()){
+            if (name.length() > 5){
                 exit = true;
             }else {
                 System.out.println("Please enter a valid name: ");

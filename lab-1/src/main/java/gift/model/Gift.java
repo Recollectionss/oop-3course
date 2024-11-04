@@ -28,16 +28,16 @@ public class Gift implements GiftInterface {
     }
 
     public Gift(int id, String name) {
-        if (id < _idCounter) {
-            throw new IllegalArgumentException("ID must be greater than or equal to " + _idCounter);
-        }
+//        if (id < _idCounter) {
+//            throw new IllegalArgumentException("ID must be greater than or equal to " + _idCounter);
+//        }
         _id = id;
         _name = name;
     }
     public Gift (int id, String name, ArrayList<Candy> candies) {
-        if (id < _idCounter) {
-            throw new IllegalArgumentException("ID must be greater than or equal to " + _idCounter);
-        }
+//        if (id < _idCounter) {
+//            throw new IllegalArgumentException("ID must be greater than or equal to " + _idCounter);
+//        }
         _id = id;
         _name = name;
         _candies = candies;
