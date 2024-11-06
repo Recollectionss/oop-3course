@@ -24,5 +24,42 @@
         </value>
         <production>Example Production</production>
     </candy>
+
+    <candy id='a2'>
+        <name>Example Candy</name>
+        <energy>100</energy>
+        <type>Chocolate</type>
+        <ingredients>
+            <water>0.5</water>
+            <sugar>25.0</sugar>
+            <fructose>10.0</fructose>
+            <chocolateType>Dark</chocolateType>
+            <vanillin>0.1</vanillin>
+        </ingredients>
+        <value>
+            <proteins>1.5</proteins>
+            <fats>3.0</fats>
+            <carbohydrates>20.0</carbohydrates>
+        </value>
+        <production>Example Production</production>
+    </candy>
+    <candy id='a3'>
+        <name>Example Candy</name>
+        <energy>100</energy>
+        <type>Chocolate</type>
+        <ingredients>
+            <water>0.5</water>
+            <sugar>25.0</sugar>
+            <fructose>10.0</fructose>
+            <chocolateType>Dark</chocolateType>
+            <vanillin>0.1</vanillin>
+        </ingredients>
+        <value>
+            <proteins>1.5</proteins>
+            <fats>3.0</fats>
+            <carbohydrates>20.0</carbohydrates>
+        </value>
+        <production>Example Production</production>
+    </candy>
 </root>
 
