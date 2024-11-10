@@ -19,12 +19,13 @@ public class ParserDOM {
 
         File xmlFile = new File(path);
 
-        ByteArrayInputStream input = new ByteArrayInputStream("<?xml version=\"1.0\"?> <rootElement></rootElement>".getBytes(StandardCharsets.UTF_8));
+//        ByteArrayInputStream input = new ByteArrayInputStream("<?xml version=\"1.0\"?> <rootElement></rootElement>".getBytes(StandardCharsets.UTF_8));
 
-        Document xmldoc = docBuilder.parse(input);
+        Document xmldoc = docBuilder.parse(xmlFile);
 
         Element element = xmldoc.getDocumentElement();
         System.out.println("Root element name is "+element.getTagName());
+
 
     }
 }

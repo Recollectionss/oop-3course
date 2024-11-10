@@ -28,7 +28,7 @@
     <candy id='a2'>
         <name>Example Candy</name>
         <energy>100</energy>
-        <type>Chocolate</type>
+        <type>Caramel</type>
         <ingredients>
             <water>0.5</water>
             <sugar>25.0</sugar>
