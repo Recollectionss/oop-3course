@@ -36,14 +36,12 @@ public class ParserDOM {
             if (node.getNodeType() == Node.ELEMENT_NODE) {
                 Element candyElement = (Element) node;
 
-                // Отримання основних атрибутів та елементів
                 String id = candyElement.getAttribute("id");
                 String name = candyElement.getElementsByTagName("name").item(0).getTextContent();
                 int energy = Integer.parseInt(candyElement.getElementsByTagName("energy").item(0).getTextContent());
                 String type = candyElement.getElementsByTagName("type").item(0).getTextContent();
                 String production = candyElement.getElementsByTagName("production").item(0).getTextContent();
 
-                // Отримання вкладеного елемента ingredients
                 Element ingredientsElement = (Element) candyElement.getElementsByTagName("ingredients").item(0);
                 float water = parseFloatElement(ingredientsElement, "water");
                 float sugar = parseFloatElement(ingredientsElement, "sugar");
@@ -51,19 +49,16 @@ public class ParserDOM {
                 String chocolateType = parseStringElement(ingredientsElement, "chocolateType");
                 float vanillin = parseFloatElement(ingredientsElement, "vanillin");
 
-                // Отримання вкладеного елемента value
                 Element valueElement = (Element) candyElement.getElementsByTagName("value").item(0);
                 float proteins = Float.parseFloat(valueElement.getElementsByTagName("proteins").item(0).getTextContent());
                 float fats = Float.parseFloat(valueElement.getElementsByTagName("fats").item(0).getTextContent());
                 float carbohydrates = Float.parseFloat(valueElement.getElementsByTagName("carbohydrates").item(0).getTextContent());
 
-                // Створення об'єкта Candy та додавання до списку
                 Candy candy = new Candy(id, name, energy, type, production, water, sugar, fructose, chocolateType, vanillin, proteins, fats, carbohydrates);
                 candyList.add(candy);
             }
         }
 
-        // Виведення інформації про цукерки
         for (Candy candy : candyList) {
             System.out.println(candy);
         }
