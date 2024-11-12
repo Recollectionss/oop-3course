@@ -1,14 +1,18 @@
 package org.example;
 
+import candy.Candy;
 import org.xml.sax.SAXException;
 import parsers.dom.ParserDOM;
 import parsers.sax.ParserSAX;
+import parsers.stax.ParserStAX;
 import transformer.XSLTransformer;
 import validator.XMLValidator;
 
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.stream.XMLStreamException;
 import javax.xml.transform.TransformerException;
 import java.io.IOException;
+import java.util.List;
 
 public class App
 {
@@ -21,9 +25,13 @@ public class App
        try{
            ParserDOM.parse(XML_PATH);
            ParserSAX.parse(XML_PATH,true);
+           List<Candy> candyList = ParserStAX.parse(XML_PATH);
+           for (Candy candy : candyList) {
+               System.out.println(candy);
+           }
            XMLValidator.validate(XML_PATH,XSD_PATH);
            XSLTransformer.transform(XML_PATH,XSL_PATH,OUT_PATH);
-       }catch(ParserConfigurationException | SAXException | IOException | TransformerException e){
+       }catch(ParserConfigurationException | SAXException | IOException | TransformerException | XMLStreamException e){
            e.printStackTrace();
        }
     }

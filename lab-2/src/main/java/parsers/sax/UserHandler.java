@@ -64,138 +64,68 @@ package parsers.sax;
 
 import candy.Candy;
 import candy.Candy.Ingredients;
-import org.xml.sax.SAXException;
 import org.xml.sax.Attributes;
 import org.xml.sax.helpers.DefaultHandler;
+import parsers.utils.ParseUtils;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 public class UserHandler extends DefaultHandler {
-    private StringBuilder buffer = new StringBuilder();
-    private int indentLevel = 0;
-    private List<Candy> candyList = new ArrayList<>(); // Коллекция для хранения объектов Candy
-    private Candy currentCandy = null; // Текущий объект Candy
-    private Ingredients currentIngredients = null; // Текущий объект Ingredients
-    private boolean isInIngredients = false; // Флаг для отслеживания, находимся ли внутри <ingredients>
-    private boolean isInValue = false; // Флаг для отслеживания, находимся ли внутри <value>
+    private final StringBuilder buffer = new StringBuilder();
+    private final List<Candy> candyList = new ArrayList<>();
+    private Candy currentCandy = null;
+    private Ingredients currentIngredients = null;
+    private boolean isInIngredients = false;
+    private boolean isInValue = false;
 
-    // Метод для получения списка всех конфигурируемых конфет
     public List<Candy> getCandyList() {
         return candyList;
     }
 
     @Override
-    public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
-        if (Objects.equals(qName, "candy")) {
-            // Новый объект Candy
+    public void startElement(String uri, String localName, String qName, Attributes attributes) {
+        buffer.setLength(0);
+
+        if ("candy".equals(qName)) {
             currentCandy = new Candy();
             candyList.add(currentCandy);
-            isInIngredients = false;
-            isInValue = false;
-            indentLevel++;
-        } else if (Objects.equals(qName, "ingredients")) {
-            // Создаем объект Ingredients
+        } else if ("ingredients".equals(qName)) {
             currentIngredients = new Ingredients();
             isInIngredients = true;
-            indentLevel++;
-        } else if (Objects.equals(qName, "value")) {
-            // Устанавливаем флаг, что парсим значения
+        } else if ("value".equals(qName)) {
             isInValue = true;
-            indentLevel++;
-        } else {
-            indentLevel++;
         }
     }
 
     @Override
     public void endElement(String uri, String localName, String qName) {
-        if (Objects.equals(qName, "candy")) {
-            // Добавляем текущую конфету в список и сбрасываем объект
-            if (currentCandy != null) {
-                currentCandy.setIngredients(currentIngredients); // Привязываем ingredients к конфете
-                currentCandy = null;
+        String content = buffer.toString().trim();
+
+        if ("candy".equals(qName)) {
+            if (currentCandy != null && currentIngredients != null) {
+                currentCandy.setIngredients(currentIngredients);
             }
-            indentLevel--;
-        } else if (Objects.equals(qName, "ingredients")) {
-            // Завершаем парсинг ingredients
-            currentCandy.setIngredients(currentIngredients); // Привязываем ingredients к конфете
-            currentIngredients = null;
+            currentCandy = null;
+        } else if ("ingredients".equals(qName)) {
             isInIngredients = false;
-            indentLevel--;
-        } else if (Objects.equals(qName, "value")) {
-            // Завершаем парсинг value
+        } else if ("value".equals(qName)) {
             isInValue = false;
-            indentLevel--;
-        } else {
-            indentLevel--;
+        } else if (currentCandy != null) {
+            if (isInIngredients && currentIngredients != null) {
+                ParseUtils.setIngredientsProperty(currentIngredients, qName, content);
+            } else if (isInValue) {
+                ParseUtils.setValueProperty(currentCandy, qName, content);
+            } else {
+                ParseUtils.setCandyProperty(currentCandy, qName, content);
+            }
         }
+
+        buffer.setLength(0);
     }
 
     @Override
-    public void characters(char[] ch, int start, int length) throws SAXException {
-        String content = new String(ch, start, length).trim();
-        if (content.isEmpty()) return;
-
-        // Обрабатываем данные в зависимости от текущего элемента
-        if (isInIngredients) {
-            if (buffer.length() > 0) {
-                String tagName = buffer.toString();
-                switch (tagName) {
-                    case "water":
-                        currentIngredients.setWater(Float.parseFloat(content));
-                        break;
-                    case "sugar":
-                        currentIngredients.setSugar(Float.parseFloat(content));
-                        break;
-                    case "fructose":
-                        currentIngredients.setFructose(Float.parseFloat(content));
-                        break;
-                    case "chocolateType":
-                        currentIngredients.setChocolateType(content);
-                        break;
-                    case "vanillin":
-                        currentIngredients.setVanillin(Float.parseFloat(content));
-                        break;
-                }
-            }
-        } else if (isInValue) {
-            if (buffer.length() > 0) {
-                String tagName = buffer.toString();
-                switch (tagName) {
-                    case "proteins":
-                        currentCandy.setProteins(Float.parseFloat(content));
-                        break;
-                    case "fats":
-                        currentCandy.setFats(Float.parseFloat(content));
-                        break;
-                    case "carbohydrates":
-                        currentCandy.setCarbohydrates(Float.parseFloat(content));
-                        break;
-                }
-            }
-        } else {
-            // Обрабатываем основные теги конфеты
-            switch (buffer.toString()) {
-                case "id":
-                    currentCandy.setId(content);
-                    break;
-                case "name":
-                    currentCandy.setName(content);
-                    break;
-                case "energy":
-                    currentCandy.setEnergy(Integer.parseInt(content));
-                    break;
-                case "type":
-                    currentCandy.setType(content);
-                    break;
-                case "production":
-                    currentCandy.setProduction(content);
-                    break;
-            }
-        }
-        buffer.setLength(0); // Очищаем буфер
+    public void characters(char[] ch, int start, int length) {
+        buffer.append(ch, start, length);
     }
 }
-

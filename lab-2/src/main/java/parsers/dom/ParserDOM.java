@@ -1,11 +1,13 @@
 package parsers.dom;
 
 import candy.Candy;
+import candy.Candy.Ingredients;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
+import parsers.utils.ParseUtils;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -15,46 +17,48 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-
 public class ParserDOM {
     public static void parse(String path) throws ParserConfigurationException, IOException, SAXException {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         DocumentBuilder docBuilder = factory.newDocumentBuilder();
-
-        File xmlFile = new File(path);
-        Document xmldoc = docBuilder.parse(xmlFile);
+        Document xmldoc = docBuilder.parse(new File(path));
 
         Element rootElement = xmldoc.getDocumentElement();
         System.out.println("Root element name is " + rootElement.getTagName());
 
         NodeList nodes = rootElement.getElementsByTagName("candy");
-
         List<Candy> candyList = new ArrayList<>();
 
         for (int i = 0; i < nodes.getLength(); i++) {
             Node node = nodes.item(i);
             if (node.getNodeType() == Node.ELEMENT_NODE) {
                 Element candyElement = (Element) node;
+                Candy candy = new Candy();
 
-                String id = candyElement.getAttribute("id");
-                String name = candyElement.getElementsByTagName("name").item(0).getTextContent();
-                int energy = Integer.parseInt(candyElement.getElementsByTagName("energy").item(0).getTextContent());
-                String type = candyElement.getElementsByTagName("type").item(0).getTextContent();
-                String production = candyElement.getElementsByTagName("production").item(0).getTextContent();
+                ParseUtils.setCandyProperty(candy, "id", candyElement.getAttribute("id"));
+                ParseUtils.setCandyProperty(candy, "name", ParseUtils.parseStringElement(candyElement, "name"));
+                ParseUtils.setCandyProperty(candy, "energy", ParseUtils.parseStringElement(candyElement, "energy"));
+                ParseUtils.setCandyProperty(candy, "type", ParseUtils.parseStringElement(candyElement, "type"));
+                ParseUtils.setCandyProperty(candy, "production", ParseUtils.parseStringElement(candyElement, "production"));
 
+                Ingredients ingredients = new Ingredients();
                 Element ingredientsElement = (Element) candyElement.getElementsByTagName("ingredients").item(0);
-                float water = parseFloatElement(ingredientsElement, "water");
-                float sugar = parseFloatElement(ingredientsElement, "sugar");
-                float fructose = parseFloatElement(ingredientsElement, "fructose");
-                String chocolateType = parseStringElement(ingredientsElement, "chocolateType");
-                float vanillin = parseFloatElement(ingredientsElement, "vanillin");
+                if (ingredientsElement != null) {
+                    ParseUtils.setIngredientsProperty(ingredients, "water", ParseUtils.parseStringElement(ingredientsElement, "water"));
+                    ParseUtils.setIngredientsProperty(ingredients, "sugar", ParseUtils.parseStringElement(ingredientsElement, "sugar"));
+                    ParseUtils.setIngredientsProperty(ingredients, "fructose", ParseUtils.parseStringElement(ingredientsElement, "fructose"));
+                    ParseUtils.setIngredientsProperty(ingredients, "chocolateType", ParseUtils.parseStringElement(ingredientsElement, "chocolateType"));
+                    ParseUtils.setIngredientsProperty(ingredients, "vanillin", ParseUtils.parseStringElement(ingredientsElement, "vanillin"));
+                }
+                candy.setIngredients(ingredients);
 
                 Element valueElement = (Element) candyElement.getElementsByTagName("value").item(0);
-                float proteins = Float.parseFloat(valueElement.getElementsByTagName("proteins").item(0).getTextContent());
-                float fats = Float.parseFloat(valueElement.getElementsByTagName("fats").item(0).getTextContent());
-                float carbohydrates = Float.parseFloat(valueElement.getElementsByTagName("carbohydrates").item(0).getTextContent());
+                if (valueElement != null) {
+                    ParseUtils.setValueProperty(candy, "proteins", ParseUtils.parseStringElement(valueElement, "proteins"));
+                    ParseUtils.setValueProperty(candy, "fats", ParseUtils.parseStringElement(valueElement, "fats"));
+                    ParseUtils.setValueProperty(candy, "carbohydrates", ParseUtils.parseStringElement(valueElement, "carbohydrates"));
+                }
 
-                Candy candy = new Candy(id, name, energy, type, production, water, sugar, fructose, chocolateType, vanillin, proteins, fats, carbohydrates);
                 candyList.add(candy);
             }
         }
@@ -62,15 +66,5 @@ public class ParserDOM {
         for (Candy candy : candyList) {
             System.out.println(candy);
         }
-    }
-
-    private static float parseFloatElement(Element parent, String tagName) {
-        NodeList nodeList = parent.getElementsByTagName(tagName);
-        return nodeList.getLength() > 0 ? Float.parseFloat(nodeList.item(0).getTextContent()) : 0;
-    }
-
-    private static String parseStringElement(Element parent, String tagName) {
-        NodeList nodeList = parent.getElementsByTagName(tagName);
-        return nodeList.getLength() > 0 ? nodeList.item(0).getTextContent() : null;
     }
 }

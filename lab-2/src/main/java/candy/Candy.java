@@ -108,7 +108,10 @@ public class Candy {
     @XmlSchemaType(name = "ID")
     protected String id;
 
-    public Candy(){}
+    public Candy(){
+        this.ingredients = new Candy.Ingredients();
+        this.value = new Candy.Value();
+    }
 
     public Candy(String id, String name, int energy, String type, String production,
                  float water, float sugar, float fructose, String chocolateType,
@@ -121,7 +124,20 @@ public class Candy {
         this.ingredients = new Ingredients(water, sugar, fructose, chocolateType,vanillin); // Инициализация ingredients с параметрами
         this.value = new Candy.Value(proteins, fats, carbohydrates);
     }
-
+    @Override
+    public String toString() {
+        return "Candy{" +
+                "id='" + id + '\'' +
+                ", name='" + name + '\'' +
+                ", energy=" + energy +
+                ", type='" + type + '\'' +
+                ", production='" + production + '\'' +
+                ", proteins=" + this.value.proteins +
+                ", fats=" + this.value.fats +
+                ", carbohydrates=" + this.value.carbohydrates +
+                ", ingredients=" + ingredients.toString() +
+                '}';
+    }
 
     /**
      * Gets the value of the name property.
@@ -341,6 +357,18 @@ public class Candy {
             this.vanillin = vanillin;
         }
         public Ingredients() {}
+
+        @Override
+        public String toString() {
+            return "Ingredients{" +
+                    "water=" + water +
+                    ", sugar=" + sugar +
+                    ", fructose=" + fructose +
+                    ", chocolateType='" + chocolateType + '\'' +
+                    ", vanillin=" + vanillin +
+                    '}';
+        }
+
         /**
          * Gets the value of the water property.
          * 
