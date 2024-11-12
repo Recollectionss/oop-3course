@@ -36,6 +36,8 @@ public class ParserStAX {
                 switch (tagName) {
                     case "candy":
                         currentCandy = new Candy();
+                        String id = startElement.getAttributeByName(new javax.xml.namespace.QName("id")).getValue();
+                        currentCandy.setId(id);
                         candyList.add(currentCandy);
                         break;
                     case "ingredients":
