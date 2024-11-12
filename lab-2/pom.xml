@@ -27,10 +27,35 @@
       <version>2.3.1</version>
     </dependency>
     <dependency>
-      <groupId>com.sun.xml.bind</groupId>
-      <artifactId>jaxb-impl</artifactId>
-      <version>2.3.1</version>
+      <groupId>org.glassfish.jaxb</groupId>
+      <artifactId>jaxb-runtime</artifactId>
+      <version>2.3.3</version>
     </dependency>
 
   </dependencies>
+
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>jaxb2-maven-plugin</artifactId>
+        <version>2.3.1</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>xjc</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <schemaDirectory>src/candies</schemaDirectory>  <!-- Вкажіть шлях до вашого XSD -->
+          <outputDirectory>src/main/java</outputDirectory>  <!-- Шлях для збереження згенерованих Java-класів -->
+          <packageName>candy</packageName>  <!-- Пакет, в якому будуть збережені Java-класи -->
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+
 </project>
