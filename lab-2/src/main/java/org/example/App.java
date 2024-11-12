@@ -1,6 +1,5 @@
 package org.example;
 
-import candy.Root;
 import org.xml.sax.SAXException;
 import parsers.dom.ParserDOM;
 import parsers.sax.ParserSAX;
@@ -9,7 +8,6 @@ import validator.XMLValidator;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
-import java.io.File;
 import java.io.IOException;
 
 public class App
