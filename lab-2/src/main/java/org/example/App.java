@@ -24,7 +24,7 @@ public class App
     public static void main( String[] args ){
        try{
            ParserDOM.parse(XML_PATH);
-           ParserSAX.parse(XML_PATH,true);
+           ParserSAX.parse(XML_PATH);
            List<Candy> candyList = ParserStAX.parse(XML_PATH);
            for (Candy candy : candyList) {
                System.out.println(candy);
