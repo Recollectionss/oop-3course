@@ -26,13 +26,13 @@
                 </xsd:element>
                 <xsd:element name="ingredients">
                     <xsd:complexType>
-                        <xsd:sequence>
+                        <xsd:all>
                             <xsd:element name="water" type="xsd:float" minOccurs="0"/>
                             <xsd:element name="sugar" type="xsd:float" minOccurs="0"/>
                             <xsd:element name="fructose" type="xsd:float" minOccurs="0"/>
                             <xsd:element name="chocolateType" type="xsd:string" minOccurs="0"/>
                             <xsd:element name="vanillin" type="xsd:float" minOccurs="0"/>
-                        </xsd:sequence>
+                        </xsd:all>
                     </xsd:complexType>
                 </xsd:element>
                 <xsd:element name="value">

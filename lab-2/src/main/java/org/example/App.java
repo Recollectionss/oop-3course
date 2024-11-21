@@ -27,7 +27,8 @@ public class App
            ParserSAX.parse(XML_PATH);
            List<Candy> candyList = ParserStAX.parse(XML_PATH);
            for (Candy candy : candyList) {
-               System.out.println(candy);
+//               System.out.println(candy);
+               candy.getId();
            }
            XMLValidator.validate(XML_PATH,XSD_PATH);
            XSLTransformer.transform(XML_PATH,XSL_PATH,OUT_PATH);
