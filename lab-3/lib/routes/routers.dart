@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lab/constants/constants.dart';
+import 'package:lab/screens/battle/battle.dart';
 import 'package:lab/screens/screens.dart';
 
 final Map<String, WidgetBuilder> routes = {
@@ -16,4 +17,5 @@ final Map<String, WidgetBuilder> routes = {
     routeButton2: "/",
   ),
   Constants.BATTLE_PREPARATION: (context) => const BattlePreparationScreen(),
+  Constants.BATLLE: (context) => const BattleScreen(),
 };

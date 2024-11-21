@@ -4,4 +4,5 @@ class Constants {
   static get HOMEPAGE => "/";
   static get GAME_MODE => "/GameMode";
   static get BATTLE_PREPARATION => "/BattlePreparation";
+  static get BATLLE => "/Batle";
 }
