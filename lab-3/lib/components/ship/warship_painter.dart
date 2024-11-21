@@ -10,18 +10,18 @@ class WarshipPainterWidget extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final Paint paint = Paint()
-      ..color = Colors.green
+      ..color = (ship.active) ? Colors.green : Colors.black
       ..style = PaintingStyle.fill;
 
-    const double cellSize = 20.0;
-    double width = ship.isHorizontal ? ship.shipSize * cellSize : cellSize;
-    double height = ship.isHorizontal ? cellSize : ship.shipSize * cellSize;
+    const double cellSize = 35.0;
+    double width = ship.horizontal ? ship.shipSize * cellSize : cellSize;
+    double height = ship.horizontal ? cellSize : ship.shipSize * cellSize;
 
     Offset position = Offset(size.width / 2, size.height / 2);
 
     canvas.save();
 
-    if (!ship.isHorizontal) {
+    if (!ship.horizontal) {
       canvas.translate(position.dx, position.dy);
       canvas.rotate(90 * 3.14159 / 180);
       canvas.translate(-position.dx, -position.dy);
@@ -50,14 +50,14 @@ class WarshipPainterWidget extends CustomPainter {
   }
 }
 class Ship{
-  late int shipSize;
-  late bool isHorizontal;
+  int shipSize;
+  bool horizontal;
+  bool active;
 
   Ship({
     required this.shipSize,
-    required this.isHorizontal
+    required this.horizontal,
+    this.active = true
   });
-
-  get size => shipSize;
-  get position => isHorizontal;
 }
+

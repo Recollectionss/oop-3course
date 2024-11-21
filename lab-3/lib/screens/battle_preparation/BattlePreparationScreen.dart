@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lab/components/game_field/game_field.dart';
+import 'package:lab/components/ship/draggable_ship.dart';
 
 import '../../components/ship/warship_painter.dart';
 
@@ -12,16 +13,16 @@ class BattlePreparationScreen extends StatefulWidget {
 
 class _BattlePreparationScreenState extends State<BattlePreparationScreen> {
   final List<Ship> ships = [
-    Ship(shipSize: 4, isHorizontal: true),
-    Ship(shipSize: 3, isHorizontal: true),
-    Ship(shipSize: 3, isHorizontal: true),
-    Ship(shipSize: 2, isHorizontal: true),
-    Ship(shipSize: 2, isHorizontal: true),
-    Ship(shipSize: 2, isHorizontal: true),
-    Ship(shipSize: 1, isHorizontal: true),
-    Ship(shipSize: 1, isHorizontal: true),
-    Ship(shipSize: 1, isHorizontal: true),
-    Ship(shipSize: 1, isHorizontal: true),
+    Ship(shipSize: 4, horizontal: true),
+    Ship(shipSize: 3, horizontal: true),
+    Ship(shipSize: 3, horizontal: true),
+    Ship(shipSize: 2, horizontal: true),
+    Ship(shipSize: 2, horizontal: true),
+    Ship(shipSize: 2, horizontal: true),
+    Ship(shipSize: 1, horizontal: true),
+    Ship(shipSize: 1, horizontal: true),
+    Ship(shipSize: 1, horizontal: true),
+    Ship(shipSize: 1, horizontal: true),
   ];
   Ship get currentShip => _currentShip ?? ships.first;
   set currentShip(Ship ship) {
@@ -66,7 +67,7 @@ class _BattlePreparationScreenState extends State<BattlePreparationScreen> {
                     ElevatedButton(
                       onPressed: () {
                         setState(() {
-                          currentShip.isHorizontal = !currentShip.isHorizontal;
+                          currentShip.horizontal = !currentShip.horizontal;
                         });
                       },
                       child: const Text("Rotate Ship"),
@@ -86,18 +87,14 @@ class _BattlePreparationScreenState extends State<BattlePreparationScreen> {
                 ),
                 const SizedBox(height: 30),
                 AnimatedSwitcher(
-                    duration: const Duration(milliseconds: 500), // продолжительность анимации
+                    duration: const Duration(milliseconds: 500),
                     transitionBuilder: (Widget child, Animation<double> animation) {
                       return ScaleTransition(
                         scale: animation,
                         child: child,
                       );
                     },
-                    child: CustomPaint(
-                      key: ValueKey<int>(_currentShipId), // уникальный ключ для каждого корабля
-                      size: const Size(100, 100),
-                      painter: WarshipPainterWidget(ship: currentShip),
-                    ),
+                    child: DraggableShip(ship: currentShip),
                 )
               ]
           ),

@@ -28,10 +28,8 @@ class MatrixPainter extends CustomPainter {
       ..style = PaintingStyle.stroke
       ..strokeWidth = 1;
 
-    // Размер клетки
     const double cellSize = 35;
 
-    // Рисуем сетку
     for (double x = 0; x <= size.width; x += cellSize) {
       canvas.drawLine(Offset(x, 0), Offset(x, size.height), paint);
     }
