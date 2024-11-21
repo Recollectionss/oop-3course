@@ -39,9 +39,9 @@ class _BaseScreenState extends State<BaseScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      CustomButton(name: widget.nameButton1, route: widget.routeButton1),
+                      CustomButtonWidget(name: widget.nameButton1, route: widget.routeButton1),
                       const SizedBox(width: 24),
-                      CustomButton(name: widget.nameButton2, route: widget.routeButton2),
+                      CustomButtonWidget(name: widget.nameButton2, route: widget.routeButton2),
 
                     ],
                   )

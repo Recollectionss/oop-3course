@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
-class CustomButton extends StatelessWidget {
+class CustomButtonWidget extends StatelessWidget {
   final String name;
   final String route;
 
-  const CustomButton({
+  const CustomButtonWidget({
     required this.name,
     required this.route,
     super.key,
