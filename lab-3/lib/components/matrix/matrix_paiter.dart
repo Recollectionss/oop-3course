@@ -9,12 +9,10 @@ class MatrixPainter extends CustomPainter {
 
     double cellSize = size.width / 10;
 
-    // Рисуем горизонтальные линии
     for (int i = 0; i <= 10; i++) {
       canvas.drawLine(Offset(0, i * cellSize), Offset(size.width, i * cellSize), paint);
     }
 
-    // Рисуем вертикальные линии
     for (int i = 0; i <= 10; i++) {
       canvas.drawLine(Offset(i * cellSize, 0), Offset(i * cellSize, size.height), paint);
     }
@@ -22,6 +20,6 @@ class MatrixPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) {
-    return false;
+    return true;
   }
 }

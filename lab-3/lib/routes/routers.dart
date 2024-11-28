@@ -17,5 +17,4 @@ final Map<String, WidgetBuilder> routes = {
     routeButton2: "/",
   ),
   Constants.BATTLE_PREPARATION: (context) => const BattlePreparationScreen(),
-  Constants.BATLLE: (context) => const BattleScreen(),
 };

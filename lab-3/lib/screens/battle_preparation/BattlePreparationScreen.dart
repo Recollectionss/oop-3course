@@ -1,9 +1,13 @@
+
 import 'package:flutter/material.dart';
-import 'package:lab/components/button/button.dart';
-import 'package:lab/components/cell/cell.dart';
+import 'package:lab/computer_player/strategy/easy_strategy.dart';
+import 'package:lab/computer_player/strategy/game_strategy.dart';
+import 'package:lab/computer_player/strategy/middle_strategy.dart';
+import 'package:lab/models/cell/cell.dart';
 import 'package:lab/components/matrix/matrix_paiter.dart';
-import 'package:lab/components/ship/ship.dart';
-import 'package:lab/constants/constants.dart';
+import 'package:lab/models/ship/ship.dart';
+
+import '../battle/battle.dart';
 
 class BattlePreparationScreen extends StatefulWidget {
   const BattlePreparationScreen({super.key});
@@ -15,8 +19,12 @@ class BattlePreparationScreen extends StatefulWidget {
 class _BattlePreparationScreenState extends State<BattlePreparationScreen> {
   final List<List<Cell>> matrix = List.generate(
     10,
-        (_) => List.generate(10, (_) => Cell(isOccupied: false, ship: null)),
+        (row) => List.generate(
+      10,
+          (col) => Cell(row: row, col: col, isOccupied: false, ship: null),
+    ),
   );
+
 
   final List<Ship> ships = [
     Ship(size: 4, count: 1),
@@ -29,10 +37,35 @@ class _BattlePreparationScreenState extends State<BattlePreparationScreen> {
 
   bool isHorizontal = true;
 
+  List<List<Cell>> playerMatrix = List.generate(10, (row) => List.generate(10, (col) => Cell(row: row, col: col,isOccupied: false, ship: null)));
+
+  GameStrategy? selectedDifficulty;
+
+  bool get areAllShipsPlaced =>
+      ships.every((ship) => ship.count == 0);
+
+  bool get canContinue =>
+      selectedDifficulty != null && areAllShipsPlaced;
+
+  void selectDifficulty(GameStrategy difficulty) {
+    setState(() {
+      selectedDifficulty = difficulty;
+    });
+  }
   @override
   void initState() {
     super.initState();
     currentShip = ships.firstWhere((ship) => ship.count > 0, orElse: () => Ship(size: 0, count: 0));
+
+    placeShipsForPlayer();
+  }
+
+  void placeShipsForPlayer() {
+    for (int i = 0; i < playerMatrix.length; i++) {
+      for (int j = 0; j < playerMatrix[i].length; j++) {
+        playerMatrix[i][j] = matrix[i][j];
+      }
+    }
   }
 
   bool placeShip(int startX, int startY) {
@@ -68,39 +101,38 @@ class _BattlePreparationScreenState extends State<BattlePreparationScreen> {
   }
 
   bool isPlacementValid(int startX, int startY, int shipSize, bool horizontal) {
+    // Check if the ship fits within the grid
     if (horizontal) {
       if (startY + shipSize > 10) return false;
     } else {
       if (startX + shipSize > 10) return false;
     }
 
-    for (int i = 0; i < shipSize; i++) {
-      if (horizontal) {
-        if (matrix[startX][startY + i].isOccupied) return false;
-      } else {
-        if (matrix[startX + i][startY].isOccupied) return false;
-      }
-    }
-
     for (int i = -1; i <= shipSize; i++) {
       for (int j = -1; j <= 1; j++) {
-        int x = horizontal ? startX + i : startX + j;
-        int y = horizontal ? startY + j : startY + i;
+        int x = horizontal ? startX + j : startX + i;
+        int y = horizontal ? startY + i : startY + j;
 
-        if (x >= 0 && x < 10 && y >= 0 && y < 10 && matrix[x][y].isOccupied) {
-          return false;
+        if (x >= 0 && x < 10 && y >= 0 && y < 10) {
+          if (matrix[x][y].isOccupied) {
+            return false;
+          }
         }
       }
     }
-
     return true;
   }
+
+
+
+
 
   void toggleOrientation() {
     setState(() {
       isHorizontal = !isHorizontal;
     });
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -119,7 +151,9 @@ class _BattlePreparationScreenState extends State<BattlePreparationScreen> {
                 Expanded(
                   child: ElevatedButton(
                     onPressed: toggleOrientation,
-                    child: Text(isHorizontal ? "Rotate to vertical":"Rotate to horizontal"),
+                    child: Text(isHorizontal
+                        ? "Rotate to vertical"
+                        : "Rotate to horizontal"),
                   ),
                 ),
                 const SizedBox(width: 20),
@@ -139,7 +173,7 @@ class _BattlePreparationScreenState extends State<BattlePreparationScreen> {
               child: Stack(
                 children: [
                   CustomPaint(
-                    size: Size(350, 350),
+                    size: const Size(350, 350),
                     painter: MatrixPainter(),
                   ),
                   ...List.generate(10, (rowIndex) {
@@ -169,10 +203,61 @@ class _BattlePreparationScreenState extends State<BattlePreparationScreen> {
               ),
             ),
             const SizedBox(height: 24),
-            CustomButtonWidget(name: "Continue", route: Constants.BATLLE)
+            Column(
+              children: [
+                const Text("Difficulty:"),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    ElevatedButton(
+                      child: const Text("Easy"),
+                      onPressed: () => selectDifficulty(EasyStrategy()),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: selectedDifficulty is EasyStrategy
+                            ? Colors.green
+                            : null,
+                      ),
+                    ),
+                    ElevatedButton(
+                      child: const Text("Middle"),
+                      onPressed: () => selectDifficulty(MiddleStrategy()),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: selectedDifficulty is MiddleStrategy
+                            ? Colors.green
+                            : null,
+                      ),
+                    ),
+                    // ElevatedButton(
+                    //   child: const Text("Hard"),
+                    //   onPressed: () => selectDifficulty(),
+                    //   style: ElevatedButton.styleFrom(
+                    //     backgroundColor: selectedDifficulty == "Hard"
+                    //         ? Colors.green
+                    //         : null,
+                    //   ),
+                    // ),
+                  ],
+                ),
+              ],
+            ),
+            ElevatedButton(
+              child: const Text("Continue"),
+              onPressed: canContinue
+                  ? () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        BattleScreen(playerMatrix: playerMatrix, computerStrategy: selectedDifficulty!),
+                  ),
+                );
+              }
+                  : null,
+            ),
           ],
         ),
       ),
     );
   }
 }
+
