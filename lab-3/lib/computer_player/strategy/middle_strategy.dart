@@ -6,14 +6,20 @@ import 'dart:math';
 class MiddleStrategy extends GameStrategy {
   final Set<Offset> visitedCells = {};
   final List<Offset> hitCells = [];
+  final List<Offset> potentialTargets = [];
   final Random random = Random();
+  Offset? lastHit;
+  Offset? firstHit;
+  Offset? currentDirection;
 
   @override
   CoordinatesDTO findNextTarget() {
-    if (hitCells.isNotEmpty) {
-      return _findAroundHits();
+    if (potentialTargets.isNotEmpty) {
+      return _continueDirection();
     }
-
+    if (lastHit != null) {
+      return _findDirection();
+    }
     return _generateRandomTarget();
   }
 
@@ -31,66 +37,107 @@ class MiddleStrategy extends GameStrategy {
     return CoordinatesDTO(x: col, y: row);
   }
 
-  CoordinatesDTO _findAroundHits() {
+  CoordinatesDTO _findDirection() {
+    if (firstHit == null) {
+      firstHit = lastHit;
+      _addAdjacentCells(lastHit!);
+    } else if (currentDirection != null) {
+      final nextTarget = lastHit! + currentDirection!;
+      if (_isValidCell(nextTarget)) {
+        visitedCells.add(nextTarget);
+        return CoordinatesDTO(x: nextTarget.dx.toInt(), y: nextTarget.dy.toInt());
+      } else {
+        currentDirection = -currentDirection!;
+        lastHit = firstHit;
+        return _findDirection();
+      }
+    } else {
+      _determineDirection();
+    }
+    return _continueDirection();
+  }
+
+  CoordinatesDTO _continueDirection() {
+    if (potentialTargets.isEmpty) {
+      return _generateRandomTarget();
+    }
+
+    final target = potentialTargets.removeAt(0);
+    visitedCells.add(target);
+    return CoordinatesDTO(x: target.dx.toInt(), y: target.dy.toInt());
+  }
+
+  void _addAdjacentCells(Offset hit) {
     final directions = [
-      Offset(0, 1),  // top
-      Offset(1, 0),  // right
-      Offset(0, -1), // bottom
-      Offset(-1, 0)  // left
+      Offset(0, -1), // Вгору
+      Offset(0, 1),  // Вниз
+      Offset(-1, 0), // Вліво
+      Offset(1, 0),  // Вправо
     ];
 
-    for (final hit in hitCells) {
-      for (final direction in directions) {
-        final nextTarget = Offset(hit.dx + direction.dx, hit.dy + direction.dy);
+    for (final dir in directions) {
+      final neighbor = Offset(hit.dx + dir.dx, hit.dy + dir.dy);
+      if (_isValidCell(neighbor)) {
+        potentialTargets.add(neighbor);
+      }
+    }
+  }
 
-        if (_isValidCell(nextTarget.dy.toInt(), nextTarget.dx.toInt())) {
-          visitedCells.add(nextTarget);
-          return CoordinatesDTO(x: nextTarget.dx.toInt(), y: nextTarget.dy.toInt());
+  void _determineDirection() {
+    if (hitCells.length >= 2) {
+      final first = hitCells[0];
+      final second = hitCells[1];
+
+      final dx = second.dx - first.dx;
+      final dy = second.dy - first.dy;
+
+      if ((dx.abs() == 0 || dy.abs() == 0) && (dx.abs() + dy.abs() == 1)) {
+        currentDirection = Offset(dx, dy);
+      }
+    }
+  }
+
+  bool _isValidCell(Offset cell, {Offset? direction}) {
+    final x = cell.dx.toInt();
+    final y = cell.dy.toInt();
+
+    if (direction != null) {
+      final dx = (cell.dx - firstHit!.dx).toInt();
+      final dy = (cell.dy - firstHit!.dy).toInt();
+      if (dx * direction.dx + dy * direction.dy < 0) {
+        return false;
+      }
+    }
+
+    return x >= 0 && x < 10 && y >= 0 && y < 10 && !visitedCells.contains(cell);
+  }
+
+  void onKill() {
+    lastHit = null;
+    firstHit = null;
+    currentDirection = null;
+    final tempHitCells = List<Offset>.from(hitCells);
+    hitCells.clear();
+    _blockSurroundingCells(tempHitCells);
+  }
+
+  void _blockSurroundingCells(List<Offset> hits) {
+    final directions = [
+      Offset(0, -1), Offset(0, 1),
+      Offset(-1, 0), Offset(1, 0),
+    ];
+
+    for (final hit in hits) {
+      for (final dir in directions) {
+        final neighbor = Offset(hit.dx + dir.dx, hit.dy + dir.dy);
+        if (_isValidCell(neighbor)) {
+          visitedCells.add(neighbor);
         }
       }
     }
-
-    hitCells.clear();
-    return _generateRandomTarget();
   }
-
-  void registerShotResult(int row, int col, bool isHit, {bool isSunk = false}) {
-    final target = Offset(col.toDouble(), row.toDouble());
-    visitedCells.add(target);
-
-    if (isHit) {
-      hitCells.add(target);
-
-      if (isSunk) {
-        _clearSurroundingCells(row, col);
-        hitCells.clear();
-      }
-    }
-  }
-
-  void _clearSurroundingCells(int row, int col) {
-    const offsets = [
-      Offset(-1, -1), Offset(-1, 0), Offset(-1, 1),
-      Offset(0, -1), /*  корабль  */ Offset(0, 1),
-      Offset(1, -1), Offset(1, 0), Offset(1, 1),
-    ];
-
-    for (final offset in offsets) {
-      int newRow = row + offset.dy.toInt();
-      int newCol = col + offset.dx.toInt();
-      final target = Offset(newCol.toDouble(), newRow.toDouble());
-
-      if (newRow >= 0 && newRow < 10 && newCol >= 0 && newCol < 10) {
-        visitedCells.add(target);
-      }
-    }
-  }
-
-  bool _isValidCell(int row, int col) {
-    return row >= 0 &&
-        row < 10 &&
-        col >= 0 &&
-        col < 10 &&
-        !visitedCells.contains(Offset(col.toDouble(), row.toDouble()));
+  @override
+  void onHit(Offset hit) {
+    hitCells.add(hit);
   }
 }

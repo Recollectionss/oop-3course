@@ -6,6 +6,7 @@ import 'package:lab/computer_player/strategy/middle_strategy.dart';
 import 'package:lab/models/cell/cell.dart';
 import 'package:lab/components/matrix/matrix_paiter.dart';
 import 'package:lab/models/ship/ship.dart';
+import 'package:lab/utils/ship_placer.dart';
 
 import '../battle/battle.dart';
 
@@ -36,6 +37,7 @@ class _BattlePreparationScreenState extends State<BattlePreparationScreen> {
   Ship? currentShip;
 
   bool isHorizontal = true;
+  late final ShipPlacer shipPlacer;
 
   List<List<Cell>> playerMatrix = List.generate(10, (row) => List.generate(10, (col) => Cell(row: row, col: col,isOccupied: false, ship: null)));
 
@@ -56,9 +58,11 @@ class _BattlePreparationScreenState extends State<BattlePreparationScreen> {
   void initState() {
     super.initState();
     currentShip = ships.firstWhere((ship) => ship.count > 0, orElse: () => Ship(size: 0, count: 0));
+    shipPlacer = ShipPlacer(matrix);
 
     placeShipsForPlayer();
   }
+
 
   void placeShipsForPlayer() {
     for (int i = 0; i < playerMatrix.length; i++) {
@@ -71,27 +75,11 @@ class _BattlePreparationScreenState extends State<BattlePreparationScreen> {
   bool placeShip(int startX, int startY) {
     if (currentShip == null) return false;
 
-    if (isPlacementValid(startX, startY, currentShip!.size, isHorizontal)) {
+    if (shipPlacer.placeShip(startX, startY, currentShip!, isHorizontal)) {
       setState(() {
-        for (int i = 0; i < currentShip!.size; i++) {
-          if (isHorizontal) {
-            matrix[startX][startY + i].isOccupied = true;
-            matrix[startX][startY + i].ship = currentShip;
-          } else {
-            matrix[startX + i][startY].isOccupied = true;
-            matrix[startX + i][startY].ship = currentShip;
-          }
-        }
-
-        if (currentShip!.count > 0) {
-          currentShip!.count--;
-        }
-
+        currentShip!.count--;
         if (currentShip!.count == 0) {
-          currentShip = ships.firstWhere(
-                (ship) => ship.count > 0,
-            orElse: () => Ship(size: 0, count: 0),
-          );
+          currentShip = ships.firstWhere((ship) => ship.count > 0, orElse: () => Ship(size: 0, count: 0));
         }
       });
       return true;
@@ -99,6 +87,7 @@ class _BattlePreparationScreenState extends State<BattlePreparationScreen> {
 
     return false;
   }
+
 
   bool isPlacementValid(int startX, int startY, int shipSize, bool horizontal) {
     // Check if the ship fits within the grid
@@ -123,15 +112,31 @@ class _BattlePreparationScreenState extends State<BattlePreparationScreen> {
     return true;
   }
 
-
-
-
-
   void toggleOrientation() {
     setState(() {
       isHorizontal = !isHorizontal;
     });
   }
+
+  void resetShips() {
+    setState(() {
+      for (var row in matrix) {
+        for (var cell in row) {
+          cell.isOccupied = false;
+          cell.ship = null;
+        }
+      }
+      ships.clear();
+      ships.addAll([
+        Ship(size: 4, count: 1),
+        Ship(size: 3, count: 2),
+        Ship(size: 2, count: 3),
+        Ship(size: 1, count: 4),
+      ]);
+      currentShip = ships.firstWhere((ship) => ship.count > 0, orElse: () => Ship(size: 0, count: 0));
+    });
+  }
+
 
 
   @override
@@ -202,62 +207,74 @@ class _BattlePreparationScreenState extends State<BattlePreparationScreen> {
                 ],
               ),
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: resetShips,
+              style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+              child: const Text("Reset Ships"),
+            ),
+            const SizedBox(height: 20),
             Column(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Text("Difficulty:"),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
+                Column(
                   children: [
-                    ElevatedButton(
-                      child: const Text("Easy"),
-                      onPressed: () => selectDifficulty(EasyStrategy()),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: selectedDifficulty is EasyStrategy
-                            ? Colors.green
-                            : null,
-                      ),
+                    const Text("Difficulty:"),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        ElevatedButton(
+                          child: const Text("Easy"),
+                          onPressed: () => selectDifficulty(EasyStrategy()),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: selectedDifficulty is EasyStrategy
+                                ? Colors.green
+                                : null,
+                          ),
+                        ),
+                        const SizedBox(width: 30,),
+                        ElevatedButton(
+                          child: const Text("Middle"),
+                          onPressed: () => selectDifficulty(MiddleStrategy()),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: selectedDifficulty is MiddleStrategy
+                                ? Colors.green
+                                : null,
+                          ),
+                        ),
+                        // ElevatedButton(
+                        //   child: const Text("Hard"),
+                        //   onPressed: () => selectDifficulty(HardStrategy()),
+                        //   style: ElevatedButton.styleFrom(
+                        //     backgroundColor: selectedDifficulty is HardStrategy
+                        //         ? Colors.green
+                        //         : null,
+                        //   ),
+                        // ),
+                      ],
                     ),
-                    ElevatedButton(
-                      child: const Text("Middle"),
-                      onPressed: () => selectDifficulty(MiddleStrategy()),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: selectedDifficulty is MiddleStrategy
-                            ? Colors.green
-                            : null,
-                      ),
-                    ),
-                    // ElevatedButton(
-                    //   child: const Text("Hard"),
-                    //   onPressed: () => selectDifficulty(),
-                    //   style: ElevatedButton.styleFrom(
-                    //     backgroundColor: selectedDifficulty == "Hard"
-                    //         ? Colors.green
-                    //         : null,
-                    //   ),
-                    // ),
                   ],
                 ),
+                const SizedBox(height: 30),
+                ElevatedButton(
+                  onPressed: canContinue
+                      ? () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            BattleScreen(playerMatrix: playerMatrix, computerStrategy: selectedDifficulty!),
+                      ),
+                    );
+                  }
+                      : null,
+                  child: const Text("Continue"),
+                ),
               ],
-            ),
-            ElevatedButton(
-              child: const Text("Continue"),
-              onPressed: canContinue
-                  ? () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) =>
-                        BattleScreen(playerMatrix: playerMatrix, computerStrategy: selectedDifficulty!),
-                  ),
-                );
-              }
-                  : null,
-            ),
+            )
           ],
         ),
       ),
     );
   }
 }
-

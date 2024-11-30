@@ -1,7 +1,9 @@
+import 'package:flutter/material.dart';
 import 'package:lab/computer_player/dto/coordinates_dto.dart';
 import 'package:lab/computer_player/strategy/game_strategy.dart';
 import 'package:lab/models/cell/cell.dart';
 import 'package:lab/models/ship/ship.dart';
+import 'package:lab/utils/ship_placer.dart';
 
 class ComputerPlayer {
   final GameStrategy strategy;
@@ -26,56 +28,28 @@ class ComputerPlayer {
   }
 
   void placeShipsForComputer() {
-    for (var ship in shipsForComputer) {
-      bool placed = false;
+      final shipPlacer = ShipPlacer(matrix);
 
-      for(int shipCount=0; shipCount <= ship.count; shipCount++){
-          int startX = strategy.random.nextInt(10);
-          int startY = strategy.random.nextInt(10);
-          bool horizontal = strategy.random.nextBool();
+      for (var ship in shipsForComputer) {
+        for (int i = 0; i < ship.count; i++) {
+          bool placed = false;
 
-          if (isPlacementValidForComputer(startX, startY, ship.size, horizontal)) {
-            for (int i = 0; i < ship.size; i++) {
-              if (horizontal) {
-                matrix[startX][startY + i].ship = ship;
-                matrix[startX][startY + i].isOccupied = true;
-              } else {
-                matrix[startX + i][startY].ship = ship;
-                matrix[startX + i][startY].isOccupied = true;
-              }
-            }
+          while (!placed) {
+            int startX = strategy.random.nextInt(10);
+            int startY = strategy.random.nextInt(10);
+            bool horizontal = strategy.random.nextBool();
 
+            placed = shipPlacer.placeShip(startX, startY, ship, horizontal);
+          }
         }
       }
     }
+
+  void onHit(Offset hit) {
+   strategy.onHit(hit);
   }
 
-  bool isPlacementValidForComputer(int startX, int startY, int shipSize, bool horizontal) {
-    if (horizontal) {
-      if (startY + shipSize > 10) return false;
-    } else {
-      if (startX + shipSize > 10) return false;
-    }
-
-    for (int i = 0; i < shipSize; i++) {
-      if (horizontal) {
-        if (matrix[startX][startY + i].isOccupied) return false;
-      } else {
-        if (matrix[startX + i][startY].isOccupied) return false;
-      }
-    }
-
-    for (int i = -1; i <= shipSize; i++) {
-      for (int j = -1; j <= 1; j++) {
-        int x = horizontal ? startX + i : startX + j;
-        int y = horizontal ? startY + j : startY + i;
-
-        if (x >= 0 && x < 10 && y >= 0 && y < 10 && matrix[x][y].isOccupied) {
-          return false;
-        }
-      }
-    }
-
-    return true;
+  void onKill() {
+   strategy.onKill();
   }
 }

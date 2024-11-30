@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'package:flutter/material.dart';
 import 'package:lab/computer_player/dto/coordinates_dto.dart';
 import 'package:lab/models/cell/cell.dart';
 
@@ -12,4 +13,6 @@ abstract class GameStrategy {
   }
 
   CoordinatesDTO findNextTarget();
+  void onHit(Offset hit) {}
+  void onKill() {}
 }

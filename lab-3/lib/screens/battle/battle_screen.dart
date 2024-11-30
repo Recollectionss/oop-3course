@@ -15,7 +15,7 @@ class BattleScreen extends StatefulWidget {
   });
 
   @override
-  State<BattleScreen> createState() => _BattleScreenState();
+  _BattleScreenState createState() => _BattleScreenState();
 }
 
 class _BattleScreenState extends State<BattleScreen> {
@@ -35,9 +35,7 @@ class _BattleScreenState extends State<BattleScreen> {
 
   void handleShot(int row, int col) {
     if (isPlayerTurn && _makeShot(computerPlayer.matrix, row, col)) {
-      setState(() {
-        isPlayerTurn = false;
-      });
+      setState(() => isPlayerTurn = false);
       Future.delayed(const Duration(seconds: 1), computerTurn);
     }
   }
@@ -49,20 +47,24 @@ class _BattleScreenState extends State<BattleScreen> {
     setState(() {
       cell.isShot = true;
       cell.color = cell.isOccupied ? Colors.red : Colors.grey;
-
-      if (cell.isOccupied && _isShipDestroyed(matrix, cell.ship)) {
-        _markSurroundingCells(matrix, cell.ship!); // Перекрашиваем клетки вокруг уничтоженного корабля
+      if (cell.isOccupied && isPlayerTurn) {
+        print("PREV");
+        print(Offset(col.toDouble(), row.toDouble()));
+        widget.computerStrategy.onHit(Offset(col.toDouble(), row.toDouble()));
+      }
+      if (_isShipDestroyedAroundShot(matrix, row, col) && isPlayerTurn) {
+        widget.computerStrategy.onKill();
+        print("Кill.");
       }
     });
     return !cell.isOccupied;
   }
 
+
   void computerTurn() {
     final move = computerPlayer.makeMove();
     if (_makeShot(playerMatrix, move.x, move.y)) {
-      setState(() {
-        isPlayerTurn = true;
-      });
+      setState(() => isPlayerTurn = true);
     } else {
       Future.delayed(const Duration(seconds: 1), computerTurn);
     }
@@ -72,17 +74,17 @@ class _BattleScreenState extends State<BattleScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(isPlayerTurn ? "Ваш ход" : "Ход компьютера"),
+        title: Text(isPlayerTurn ? "Your turn" : "Computer turn"),
         backgroundColor: const Color.fromARGB(255, 9, 41, 104),
       ),
       backgroundColor: Colors.white,
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Text("Ваше поле"),
+          const Text("You field"),
           _buildMatrix(playerMatrix, false),
           const SizedBox(height: 20),
-          const Text("Поле компьютера"),
+          const Text("Computer Field"),
           _buildMatrix(computerPlayer.matrix, true),
         ],
       ),
@@ -90,13 +92,13 @@ class _BattleScreenState extends State<BattleScreen> {
   }
 
   Widget _buildMatrix(List<List<Cell>> matrix, bool isClickable) {
-    const double cellSize = 30.0; // Увеличенный размер ячеек
+    const double cellSize = 30.0;
     return Center(
       child: Container(
         width: cellSize * matrix.length,
         height: cellSize * matrix.length,
         decoration: BoxDecoration(
-          border: Border.all(color: Colors.black, width: 2.0), // Граница матрицы
+          border: Border.all(color: Colors.black, width: 2.0),
         ),
         child: Stack(
           children: List.generate(matrix.length, (row) {
@@ -105,15 +107,13 @@ class _BattleScreenState extends State<BattleScreen> {
                 left: col * cellSize,
                 top: row * cellSize,
                 child: GestureDetector(
-                  onTap: isClickable && isPlayerTurn
-                      ? () => handleShot(row, col)
-                      : null,
+                  onTap: isClickable && isPlayerTurn ? () => handleShot(row, col) : null,
                   child: Container(
                     width: cellSize,
                     height: cellSize,
                     decoration: BoxDecoration(
-                      border: Border.all(color: Colors.black), // Граница ячеек
-                      color: _getCellColor(matrix[row][col], isClickable),
+                      border: Border.all(color: Colors.black),
+                      color: _getCellColor(matrix[row][col], !isClickable),
                     ),
                   ),
                 ),
@@ -129,45 +129,92 @@ class _BattleScreenState extends State<BattleScreen> {
     if (cell.isShot) {
       return cell.isOccupied ? Colors.red : Colors.grey;
     } else if (cell.isOccupied && isPlayerMatrix) {
-      return Colors.blue.withOpacity(0.5); // Отображение кораблей игрока
+      return Colors.blue.withOpacity(0.5);
     }
     return Colors.transparent;
   }
 
-  bool _isShipDestroyed(List<List<Cell>> matrix, Ship? ship) {
-    if (ship == null) return false;
-    // Проверяем, уничтожены ли все клетки корабля
-    return matrix.every((row) =>
-        row.every((cell) => cell.ship != ship || cell.isShot));
+  bool _isShipDestroyedAroundShot(List<List<Cell>> matrix, int shotRow, int shotCol) {
+    final cell = matrix[shotRow][shotCol];
+    if (cell.ship == null) return false;
+
+    final ship = cell.ship!;
+    final shipCells = _getShipCellsAround(matrix, shotRow, shotCol, ship);
+
+    if (shipCells.every((c) => c.isShot)) {
+      print("All cells in this ship destroyed");
+      _markSurroundingCells(matrix, shotRow, shotCol, shipCells);
+      return true;
+    }
+    return false;
   }
 
-  void _markSurroundingCells(List<List<Cell>> matrix, Ship ship) {
-    for (final cell in _getShipCells(matrix, ship)) {
-      for (int dr = -1; dr <= 1; dr++) {
-        for (int dc = -1; dc <= 1; dc++) {
-          final row = cell.row + dr;
-          final col = cell.col + dc;
+  List<Cell> _getShipCellsAround(List<List<Cell>> matrix, int shotRow, int shotCol, Ship ship) {
+    List<Cell> shipCells = [];
+    print(ship.isHorizontal);
 
-          if (_isInBounds(row, col) && !_isOccupied(matrix, row, col)) {
-            setState(() {
-              matrix[row][col].isShot = true;
-              matrix[row][col].color = Colors.grey; // Перекрашиваем клетки вокруг
-            });
+    if (ship.isHorizontal) {
+      for (int i = 0; i <= ship.size; i++) {
+        if (shotCol + i < 10) {
+          final cell = matrix[shotRow][shotCol + i];
+          if (cell.ship == ship) {
+            shipCells.add(cell);
+          }
+        }
+        if (shotCol - i >= 0) {
+          final cell = matrix[shotRow][shotCol - i];
+          if (cell.ship == ship) {
+            shipCells.add(cell);
+          }
+        }
+      }
+    } else {
+      for (int i = 0; i < ship.size; i++) {
+        if (shotRow + i < matrix.length) {
+          final cell = matrix[shotRow + i][shotCol];
+          if (cell.ship == ship) {
+            shipCells.add(cell);
+          }
+        }
+        if (shotRow - i >= 0) {
+          final cell = matrix[shotRow - i][shotCol];
+          if (cell.ship == ship) {
+            shipCells.add(cell);
           }
         }
       }
     }
+
+    return shipCells;
   }
 
-  List<Cell> _getShipCells(List<List<Cell>> matrix, Ship ship) {
-    return matrix.expand((row) => row).where((cell) => cell.ship == ship).toList();
+  void _markSurroundingCells(List<List<Cell>> matrix, int shotRow, int shotCol, List<Cell> shipCells) {
+    Set<Cell> surroundingCells = {};
+
+    for (var shipCell in shipCells) {
+      for (int dr = -1; dr <= 1; dr++) {
+        for (int dc = -1; dc <= 1; dc++) {
+          final row = shipCell.row + dr;
+          final col = shipCell.col + dc;
+
+          if (_isInBounds(row, col)) {
+            final surroundingCell = matrix[row][col];
+            if (!shipCells.contains(surroundingCell) && !surroundingCell.isShot) {
+              surroundingCells.add(surroundingCell);
+            }
+          }
+        }
+      }
+    }
+
+    for (var surroundingCell in surroundingCells) {
+      setState(() {
+        surroundingCell.isShot = true;
+        surroundingCell.color = Colors.grey;
+      });
+    }
   }
 
   bool _isInBounds(int row, int col) => row >= 0 && row < 10 && col >= 0 && col < 10;
 
-  bool _isOccupied(List<List<Cell>> matrix, int row, int col) =>
-      matrix[row][col].ship != null;
 }
-
-
-

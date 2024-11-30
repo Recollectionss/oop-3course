@@ -1,5 +1,3 @@
-// models/battle_state.dart
-
 import 'package:lab/models/cell/cell.dart';
 import 'package:lab/models/ship/ship.dart';
 
